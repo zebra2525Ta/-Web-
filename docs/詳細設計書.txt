@@ -1,0 +1,181 @@
+各画面に配置される具体的なUI要素、動作時のJavaScript制御イベント、およびID理論の接続を網羅。
+
+# 【G00】第0章：導入（トップページ）
+
+**UI**要素：
+
+タイトル：⁠<h1>居住地選択シミュレーション</h1>⁠
+
+導入説明文：「なんとなく都会がいいと思っていませんか？将来の暮らしをシミュレーションしてみましょう」
+
+入力フォーム群：
+
+選択肢（ラジオボタン）：⁠name="city_def"⁠（値：⁠convenience⁠ / ⁠commerce⁠ / ⁠entertainment⁠）
+
+選択肢（ラジオボタン）：⁠name="desired_loc"⁠（値：⁠urban⁠ / ⁠sub_urban⁠ / ⁠rural⁠）
+
+テキストエリア：⁠id="reason_before"⁠（プレースホルダー：「なぜそこを選びましたか？」）
+
+スライダー：⁠id="resistance"⁠（min="1", max="5", step="1"）
+
+ボタン：⁠id="btn_start"⁠（初期状態は活性）
+
+イベント・ロジック仕様：
+
+⁠btn_start⁠ の ⁠onclick⁠ イベント：
+
+1 各入力フォームの値を取得し、空欄がないかチェック（バリデーション）。
+
+2 空欄がある場合、⁠alert('未入力の項目があります')⁠ を表示し、処理を中断。
+
+3 すべて入力されている場合、上記データスキーマの ⁠user_before_data⁠ 形式のオブジェクトを作成し、⁠localStorage.setItem('residence_study_log', JSON.stringify(data))⁠ で保存。
+
+4 ⁠window.location.href = 'ch1.html'⁠ を実行して次画面へ遷移。
+
+**ID**理論の紐付け： 【
+**Attention**】 自身の初期スキーマ（先入観）を強制的にアウトプットさせることで、学習への能動性を引き出す。
+
+# 【G01】第1章：地域を学ぶ
+
+**UI**要素：
+
+⁠<h2>第1章：3つの地域の特徴を知る</h2>⁠
+
+比較データグリッド（**3**カラムレイアウト）：
+
+⁠[大阪市]⁠ 家賃：高 / アクセス：電車数分間隔 / リンク：⁠<a href="..." target="_blank">大阪市HP</a>⁠
+
+⁠[河内長野市]⁠ 家賃：中 / アクセス：主要駅まで30分 / リンク：⁠<a href="..." target="_blank">河内長野市HP</a>⁠
+
+⁠[西脇市]⁠ 家賃：低 / アクセス：車必須・高速バスあり / リンク：⁠<a href="..." target="_blank">西脇市HP</a>⁠
+
+ボタン：⁠id="btn_to_ch2"⁠（初期状態：⁠disabled="true"⁠）
+
+イベント・ロジック仕様：
+
+⁠window.onload⁠ 時点から ⁠setTimeout⁠ で10秒カウント、またはスクロール位置が最下部に達した（⁠window.innerHeight + window.scrollY >= document.body.offsetHeight⁠）タイミングを検知。
+
+上記の条件を達成した際、⁠btn_to_ch2.removeAttribute('disabled')⁠ を実行してボタンを活性化。
+
+**ID**理論の紐付け： 【
+**Relevance**】 先入観を交えないフラットな事実を認知させる。別タブ遷移により学習環境の離脱を防ぎ、持続性を担保する。
+
+# 【G02】第2.1章：お金（クイズと価値観のページ）
+
+**UI**要素：
+
+⁠<h2>第2.1章：暮らしとお金</h2>⁠
+
+クイズセクション（⁠id="quiz_section"⁠）：
+
+質問テキスト：「3都市の中で、1人あたりの平均年収が一番高いのはどこ？」
+
+ボタン群：⁠id="ans_osaka"⁠, ⁠id="ans_kawachinagano"⁠, ⁠id="ans_nishiwaki"⁠
+
+解説セクション（⁠id="explain_section"⁠）：
+
+※初期スタイル：⁠style="display: none;"⁠
+
+テキスト：「正解は河内長野市です！実際のデータを見ると、可処分所得では…」および比較グラフ画像。
+
+内省質問セクション（⁠id="insight_section"⁠）：
+
+※初期スタイル：⁠style="display: none;"⁠
+
+質問テキスト：⁠<h3>📋 ここまで 3都市を学んで、あなたが最も重視する項目は？</h3>⁠
+
+ラジオボタン群：⁠name="valued_item"⁠（値：⁠money⁠ / ⁠rent⁠ / ⁠access⁠ / ⁠nature⁠ / ⁠private⁠）
+
+ボタン：⁠id="btn_to_ch4"⁠（初期状態：⁠disabled="true"⁠）
+
+イベント・ロジック仕様：
+
+クイズのいずれかのボタンがクリックされた時：
+
+1 クリックされたボタンに応じて正誤判定を行い、結果を一時変数に保持。
+
+2 ⁠explain_section.style.display = 'block'⁠
+
+3 ⁠insight_section.style.display = 'block'⁠（★ここで初めて価値観の質問を露出させる）
+
+ラジオボタン ⁠name="valued_item"⁠ が選択された時：
+
+1 選択された値を ⁠localStorage⁠ の ⁠mid_session_data⁠ に追記。
+
+2 ⁠btn_to_ch4.removeAttribute('disabled')⁠ を実行。
+
+**ID**理論の紐付け： 【
+**Attention** ➡️
+ **Relevance**】 クイズの裏付けデータを用いて「都会＝お金がある」というスキーマを破壊し、認知的不協和を発生させる。その直後に価値観を答えさせるため、ネタバレをJSで完全隠蔽し、思考の純粋性を守る。
+
+# 【G03】第4章：詳細検討
+
+**UI**要素：
+
+⁠<h2>第4章：ライフスタイルと支援制度の比較</h2>⁠
+
+行政サービス・支援制度（子育て、住宅補助など）のデータ比較表の提示。
+
+各都市で生活した場合の時間軸シミュレーションシナリオの掲載。
+
+ボタン：⁠id="btn_to_ch5"⁠（初期状態は活性、最下部に配置）
+
+イベント・ロジック仕様：
+
+ボタンクリック時、⁠window.location.href = 'ch5.html'⁠ へ遷移。
+
+**ID**理論の紐付け： 【
+**Confidence**】 表面的なイメージを削ぎ落とし、生活のリアルな解像度を上げることで、学習者自身の判断に対する自己効力感を形成する。
+
+# 【G04】第5章：再意思決定と活動提案
+
+**UI**要素：
+
+⁠<h2>第5章：これからのあなたの暮らし</h2>⁠
+
+事後意識調査セクション（⁠id="after_form_section"⁠）：
+
+Q1ラジオボタン：⁠name="final_loc"⁠（値：⁠urban⁠ / ⁠sub_urban⁠ / ⁠rural⁠）
+
+Q2テキストエリア：⁠id="reason_after"⁠
+
+Q3ラジオボタン：⁠name="change_scale"⁠（1〜5の5段階）
+
+Q4ラジオボタン：⁠name="influence_factor"⁠（値：⁠money⁠ / ⁠access⁠ / ⁠service⁠）
+
+都市別プロフィールセクション（⁠id="profile_section"⁠）：
+
+※初期スタイル：⁠style="display: none;"⁠
+
+テキスト：「📍 都市別プロフィール：あなたにぴったりなのは？ 大阪市＝利便性型、河内長野市＝バランス型…」
+
+活動提案セクション（⁠id="action_section"⁠）：
+
+※初期スタイル：⁠style="display: none;"⁠
+
+Q5ラジオボタン：⁠name="future_action"⁠（値：⁠strong⁠ / ⁠yes⁠ / ⁠no⁠）
+
+ボタン：⁠id="btn_submit"⁠（初期状態：⁠disabled="true"⁠）
+
+イベント・ロジック仕様：
+
+Q1〜Q4のすべてのフォームに入力が行われたかをイベントリスナー（⁠change⁠ / ⁠input⁠）で常時監視。
+
+Q1〜Q4がすべて埋まった瞬間に、プログラムで以下を実行：
+
+1 ⁠profile_section.style.display = 'block'⁠
+
+2 ⁠action_section.style.display = 'block'⁠（★ここで初めてタイプ診断のまとめと、Q5を露出）
+
+Q5が選択されたら、⁠btn_submit.removeAttribute('disabled')⁠ を実行。
+
+⁠btn_submit⁠ の ⁠onclick⁠ イベント：
+
+1 ⁠localStorage⁠ から既存のデータを取得し、⁠user_after_data⁠ の各値をマージ（統合）する。
+
+2 最終統合された1つのJSONオブジェクトを再度 ⁠localStorage.setItem⁠ で保存。
+
+3 ⁠window.location.href = 'complete.html'⁠ へ遷移。
+
+**ID**理論の紐付け： 【
+**Satisfaction**】 タイプ別の解説（プロフィール）を最初から見せると、Q2の記述がその文言に毒されてしまう（バイアスの発生）。これをJSで遮断することで、Before / After の純粋な変化データを測定する。Q5により、教材外での自発的な情報収集（学習の転移）を評価する。

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大阪市について - 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.city-detail-header {
+  padding: 64px 20px 40px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(91,140,255,0.12) 0%, rgba(91,140,255,0.04) 100%);
+}
+.city-detail-tag {
+  display: inline-block;
+  background: var(--c-osaka);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.city-detail-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+.city-detail-desc {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.city-body { max-width: 900px; margin: 0 auto; padding: 32px 28px 80px; }
+
+/* ── クイックスタッツ */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+@media (min-width: 600px) { .quick-stats { grid-template-columns: repeat(4, 1fr); } }
+.qs-item {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 14px 10px;
+  text-align: center;
+}
+.qs-item.qs-bad  { border-color: rgba(255,104,104,0.3); background: rgba(255,104,104,0.05); }
+.qs-icon { font-size: 1.3rem; margin-bottom: 5px; }
+.qs-value {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--c-osaka);
+  line-height: 1.2;
+}
+.qs-label { font-size: 0.68rem; color: var(--c-text-muted); margin-top: 4px; line-height: 1.4; }
+.qs-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  margin-top: 5px;
+  display: inline-block;
+}
+.qs-badge-bad  { background: rgba(255,104,104,0.12); color: var(--c-accent2); }
+.qs-badge-best { background: rgba(62,201,176,0.12); color: var(--c-accent3); }
+
+/* ── セクションカード */
+.dc {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.dc-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: var(--c-text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dc-title span { color: var(--c-osaka); }
+
+/* ── タイムライン */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 12px; padding-bottom: 14px; position: relative; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::after {
+  content: '';
+  position: absolute;
+  left: 44px;
+  top: 22px;
+  bottom: 0;
+  width: 1px;
+  background: var(--c-border);
+}
+.tl-item:last-child::after { display: none; }
+.tl-time {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-osaka);
+  width: 42px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.tl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-osaka);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.tl-text { font-size: 0.85rem; line-height: 1.5; color: var(--c-text); }
+.tl-sub  { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 2px; }
+.tl-highlight {
+  display: inline-block;
+  background: rgba(91,140,255,0.1);
+  border: 1px solid rgba(91,140,255,0.2);
+  border-radius: 6px;
+  padding: 1px 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-osaka);
+  margin-top: 3px;
+}
+
+/* ── 特徴タグ */
+.feature-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.ftag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  line-height: 1;
+}
+.ftag.good { background: rgba(62,201,176,0.1); color: var(--c-accent3); border: 1px solid rgba(62,201,176,0.25); }
+.ftag.warn { background: rgba(245,166,35,0.1); color: #d49a10; border: 1px solid rgba(245,166,35,0.3); }
+
+/* ── ミニ比較バー */
+.compare-section { margin: 8px 0; }
+.cmp-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 8px; }
+.cmp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.cmp-name { font-size: 0.7rem; width: 52px; flex-shrink: 0; color: var(--c-text-muted); }
+.cmp-name.current { color: var(--c-osaka); font-weight: 700; }
+.cmp-track { flex: 1; height: 8px; background: var(--c-border); border-radius: 4px; overflow: hidden; }
+.cmp-fill { height: 100%; border-radius: 4px; width: 0; transition: width 0.9s cubic-bezier(.23,1,.32,1); }
+.cmp-num { font-size: 0.7rem; font-weight: 700; width: 46px; text-align: right; }
+.cmp-num.current { color: var(--c-osaka); }
+
+/* ── ナビ */
+.city-nav { display: flex; justify-content: center; gap: 12px; padding: 0 28px 60px; max-width: 900px; margin: 0 auto; }
+.btn-city-nav {
+  padding: 14px 24px;
+  border-radius: var(--r-sm);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--c-osaka);
+  background: var(--c-osaka);
+  color: #fff;
+  transition: all 0.2s;
+}
+.btn-city-nav:hover { background: #7aa3ff; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:15%"></div></div>
+
+<section class="city-detail-header">
+  <div class="city-detail-tag">大都市</div>
+  <h1 class="city-detail-title">大阪市</h1>
+  <p class="city-detail-desc">関西最大の都市。あらゆる利便性が揃う一方、生活コストが高く「手元に残るお金」は3都市中最少です。</p>
+</section>
+
+<div class="city-body">
+
+  <!-- クイックスタッツ -->
+  <div class="quick-stats">
+    <div class="qs-item">
+      <div class="qs-icon">¥</div>
+      <div class="qs-value">442万円</div>
+      <div class="qs-label">平均年収 / 年</div>
+      <div class="qs-badge qs-badge-bad">3都市中 最低</div>
+    </div>
+    <div class="qs-item qs-bad">
+      <div class="qs-icon">家賃</div>
+      <div class="qs-value">4.2万円</div>
+      <div class="qs-label">月額家賃（1R目安）</div>
+      <div class="qs-badge qs-badge-bad">3都市中 最高</div>
+    </div>
+    <div class="qs-item qs-bad">
+      <div class="qs-icon">手取</div>
+      <div class="qs-value">211万円</div>
+      <div class="qs-label">可処分所得 / 年</div>
+      <div class="qs-badge qs-badge-bad">3都市中 最低</div>
+    </div>
+    <div class="qs-item qs-bad">
+      <div class="qs-icon">貯蓄</div>
+      <div class="qs-value">1.5万円</div>
+      <div class="qs-label">月間貯蓄ペース</div>
+      <div class="qs-badge qs-badge-bad">3都市中 最低</div>
+    </div>
+  </div>
+
+  <!-- 一日の過ごし方 -->
+  <div class="dc">
+    <div class="dc-title">大阪市での<span>一日の過ごし方（社会人1年目）</span></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-time">07:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">通勤ラッシュ（最寄り駅まで徒歩2分、電車5〜10分）</div>
+          <div class="tl-sub">交通利便性は抜群。どこへでも乗り換えなしで行ける。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">12:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">ランチは選択肢が無数</div>
+          <div class="tl-sub">ミシュランガイド掲載店から格安食堂まで。ただし混雑する。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">19:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">退勤後、同僚と難波・梅田で飲み</div>
+          <div class="tl-sub">交流機会が多い。キャリアのネットワークが広がりやすい。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">23:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">帰宅。今月の貯金ペース→</div>
+          <div class="tl-highlight">月1.5万円（年間18万円）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 強み -->
+  <div class="dc">
+    <div class="dc-title">大阪市の<span>強み</span></div>
+    <div class="feature-tags">
+      <span class="ftag good">交通利便性 ★★★★★</span>
+      <span class="ftag good">求人数・業種が圧倒的</span>
+      <span class="ftag good">飲食・娯楽が無限</span>
+      <span class="ftag good">医療施設数 3都市No.1</span>
+      <span class="ftag good">教育・大学が多数</span>
+      <span class="ftag good">情報・トレンドが集まる</span>
+      <span class="ftag good">キャリア形成に有利</span>
+    </div>
+  </div>
+
+  <!-- 注意点 -->
+  <div class="dc">
+    <div class="dc-title">注意点・<span>デメリット</span></div>
+    <div class="feature-tags">
+      <span class="ftag warn">家賃が3都市最高</span>
+      <span class="ftag warn">生活コスト高（消費支出 年181万）</span>
+      <span class="ftag warn">可処分所得が最も少ない</span>
+      <span class="ftag warn">朝のラッシュが激しい</span>
+      <span class="ftag warn">自然・緑が少ない</span>
+      <span class="ftag warn">地域つながりが希薄</span>
+      <span class="ftag warn">待機児童が発生しやすい</span>
+    </div>
+  </div>
+
+  <!-- 3都市比較バー -->
+  <div class="dc">
+    <div class="dc-title">他都市との<span>比較</span></div>
+    <div class="compare-section" id="compare-sec" role="img" aria-label="3都市の比較グラフ。月額家賃：大阪市4.2万円（最高）、河内長野市3.0万円、西脇市2.0万円。可処分所得：大阪市211万円（最低）、河内長野市281万円、西脇市313万円（最高）。">
+      <div class="cmp-label" style="margin-bottom:14px">月額家賃（1R）</div>
+      <div class="cmp-row">
+        <div class="cmp-name current">→ 大阪市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-osaka)" data-w="100"></div></div>
+        <div class="cmp-num current">4.2万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">河内長野</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-kawachi)" data-w="71"></div></div>
+        <div class="cmp-num">3.0万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">西脇市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-nishiwaki)" data-w="48"></div></div>
+        <div class="cmp-num">2.0万</div>
+      </div>
+
+      <div class="cmp-label" style="margin-top:20px;margin-bottom:14px">可処分所得（年）</div>
+      <div class="cmp-row">
+        <div class="cmp-name current">→ 大阪市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-osaka)" data-w="67"></div></div>
+        <div class="cmp-num current">211万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">河内長野</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-kawachi)" data-w="90"></div></div>
+        <div class="cmp-num">281万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">西脇市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-nishiwaki)" data-w="100"></div></div>
+        <div class="cmp-num">313万</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:14px;font-size:0.85rem;">
+      年収は3都市中最低でも、<strong>キャリアの選択肢・昇給機会・ネットワーク</strong>という観点では大阪市が圧倒的優位です。「今のお金」と「将来のお金」のどちらを重視するか、がポイントです。
+    </div>
+  </div>
+
+  <!-- 公式情報 -->
+  <div class="dc">
+    <div class="dc-title"><span>公式情報</span></div>
+    <p style="font-size:0.88rem;color:var(--c-text-muted);margin-bottom:14px;">移住支援・生活情報・住まい探しの詳細はこちら。</p>
+    <a href="https://www.city.osaka.lg.jp/" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--c-osaka);color:#fff;text-decoration:none;border-radius:var(--r-sm);font-size:0.88rem;font-weight:700;">
+      大阪市公式HP
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<div class="city-nav">
+  <button class="btn-city-nav" onclick="window.location.href='kawachinagano.html'">
+    河内長野市を見る →
+  </button>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+// 比較バーアニメーション
+const obs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.cmp-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+    obs.disconnect();
+  }
+}, { threshold: 0.4 });
+obs.observe(document.getElementById('compare-sec'));
+</script>
+</body>
+</html>

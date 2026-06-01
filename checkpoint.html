@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中間調査 - 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { background: var(--c-bg); }
+
+.intro-section {
+  padding: 100px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(91,140,255,0.1) 0%, rgba(78,205,196,0.05) 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-text {
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.intro-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  margin-bottom: 20px;
+  color: var(--c-text);
+}
+
+.intro-desc {
+  color: var(--c-text-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.intro-card {
+  max-width: 900px;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r);
+  padding: 40px 32px;
+}
+
+.card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.93rem;
+}
+
+.radio-option:hover {
+  border-color: var(--c-accent);
+  background: rgba(91,140,255,0.08);
+}
+
+.radio-option input[type="radio"] {
+  display: none;
+}
+
+.radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--c-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.radio-option.selected {
+  border-color: var(--c-accent);
+  background: rgba(91,140,255,0.12);
+}
+
+.radio-option.selected .radio-dot {
+  border-color: var(--c-accent);
+  background: var(--c-accent);
+}
+
+.radio-option.selected .radio-dot::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  display: block;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.04em;
+  margin-top: 20px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #7aa3ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(91,140,255,0.4);
+}
+
+.btn-primary:disabled {
+  background: var(--c-border);
+  color: var(--c-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.lock-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  margin-top: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+
+<section class="chapter-section" style="padding: 80px 20px; background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-surface) 100%);">
+  <div class="chapter-header" style="text-align: center; margin-bottom: 60px;">
+    <h1 class="chapter-title" style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 16px;">中間調査</h1>
+    <p class="chapter-desc" style="color: var(--c-text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto;">
+      各地域の情報を見る前に、現在のあなたの気持ちを教えてください。
+    </p>
+  </div>
+
+  <div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 28px 80px;">
+
+    <!-- Q1 -->
+    <div class="form-step" style="display: flex; gap: 16px; margin-bottom: 24px;">
+      <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--c-accent); color: #fff; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
+      <div class="step-content" style="flex: 1;">
+        <div class="card" style="background: var(--c-surface); border: 1.5px solid var(--c-border-bright); border-radius: var(--r); padding: 28px 32px; margin-bottom: 20px;">
+          <div class="card-label" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 10px;">Q1 — 将来住みたい場所</div>
+          <h3 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5;">現在、あなたはどんな場所に住みたいと思いますか？</h3>
+          <div class="radio-group" id="q1-group">
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="mid_loc" value="urban">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>都市部（利便性が高く、若者が一番豊かに暮らせる大阪市など）</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="mid_loc" value="sub_urban">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>準都市（市街地と自然が混在する地域）</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="mid_loc" value="rural">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>地方（自然豊かなコンパクトな町）</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="form-step" style="display: flex; gap: 16px; margin-bottom: 24px; margin-top: 16px;">
+      <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--c-accent); color: #fff; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
+      <div class="step-content" style="flex: 1;">
+        <div class="card" style="background: var(--c-surface); border: 1.5px solid var(--c-border-bright); border-radius: var(--r); padding: 28px 32px; margin-bottom: 20px;">
+          <div class="card-label" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 10px;">Q2 — その理由</div>
+          <h3 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5;">なぜそこを選びましたか？</h3>
+          <textarea id="reason_mid" class="textarea-field" placeholder="理由を自由に書いてください。" style="width: 100%; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); color: var(--c-text); font-family: 'Noto Sans JP', sans-serif; font-size: 0.93rem; padding: 14px 18px; resize: vertical; min-height: 100px; outline: none; transition: border-color 0.2s; line-height: 1.7;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="form-step" style="display: flex; gap: 16px; margin-bottom: 24px; margin-top: 16px;">
+      <div class="step-num" style="width: 36px; height: 36px; border-radius: 50%; background: var(--c-accent); color: #fff; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
+      <div class="step-content" style="flex: 1;">
+        <div class="card" style="background: var(--c-surface); border: 1.5px solid var(--c-border-bright); border-radius: var(--r); padding: 28px 32px; margin-bottom: 20px;">
+          <div class="card-label" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 10px;">Q3 — 最も重視する項目</div>
+          <h3 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5;">ここまでで、あなたが最も重視する項目は何ですか？</h3>
+          <div class="radio-group" id="q3-group">
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="valued_item" value="money">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>お金・生活費</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="valued_item" value="rent">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>家賃</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="valued_item" value="access">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>交通・アクセス</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="valued_item" value="nature">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>自然環境</span>
+            </label>
+            <label class="radio-option" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--c-surface2); border: 1.5px solid var(--c-border); border-radius: var(--r-sm); cursor: pointer; transition: all 0.2s ease; font-size: 0.93rem;">
+              <input type="radio" name="valued_item" value="private">
+              <div class="radio-dot" style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"></div>
+              <span>プライバシー・ゆとり</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div style="margin-top: 40px;">
+      <p class="lock-note" style="text-align: center; font-size: 0.8rem; color: var(--c-text-muted); margin-top: 8px;">すべての質問にお答えいただくと、次へ進めます</p>
+      <button id="btn_next" class="btn-primary" disabled style="display: block; width: 100%; padding: 18px; background: var(--c-accent); color: #fff; border: none; border-radius: var(--r-sm); font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease; letter-spacing: 0.04em; margin-top: 12px;">
+        地域情報を見る →
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+// ── Radio 選択スタイル
+document.querySelectorAll('.radio-group').forEach(group => {
+  group.querySelectorAll('.radio-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const radio = opt.querySelector('input[type="radio"]');
+      radio.checked = true;
+      group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      checkCompletion();
+    });
+  });
+});
+
+// ── Textarea 監視
+document.getElementById('reason_mid').addEventListener('input', checkCompletion);
+
+// ── バリデーション
+function checkCompletion() {
+  const q1 = document.querySelector('input[name="mid_loc"]:checked');
+  const q2 = document.getElementById('reason_mid').value.trim();
+  const q3 = document.querySelector('input[name="valued_item"]:checked');
+  const allFilled = q1 && q2 && q3;
+  document.getElementById('btn_next').disabled = !allFilled;
+}
+
+// ── Submit
+document.getElementById('btn_next').addEventListener('click', () => {
+  const q1 = document.querySelector('input[name="mid_loc"]:checked');
+  const q2 = document.getElementById('reason_mid').value.trim();
+  const q3 = document.querySelector('input[name="valued_item"]:checked');
+
+  if (!q1 || !q2 || !q3) {
+    alert('未入力の項目があります');
+    return;
+  }
+
+  // 中間調査データを保存
+  let logData = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
+  logData.user_mid_data = {
+    mid_loc: q1.value,
+    reason_mid: q2,
+    valued_item: q3.value,
+    timestamp_mid: new Date().toISOString()
+  };
+  // Before比較用にdesired_locも保存（complete.htmlで参照）
+  if (!logData.user_before_data) logData.user_before_data = {};
+  logData.user_before_data.desired_loc = q1.value;
+  logData.user_before_data.valued_item_before = q3.value;
+  localStorage.setItem('residence_study_log', JSON.stringify(logData));
+
+  // 都市紹介ページに遷移
+  window.location.href = 'osaka.html';
+});
+
+// ── プログレスバーアニメーション
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  document.querySelector('.progress-fill').style.width = Math.min(progress + 30, 40) + '%';
+});
+</script>
+
+</body>
+</html>

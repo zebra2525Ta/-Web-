@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第1章：3つの地域を知る | 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245,200,66,0.1);
+  border: 1px solid rgba(245,200,66,0.3);
+  color: var(--c-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-top: 14px;
+}
+#timer-count {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+}
+
+.city-detail-section { margin-bottom: 28px; }
+.city-detail-section h3 {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dot-osaka { width:10px; height:10px; border-radius:50%; background:var(--c-osaka); flex-shrink:0; }
+.dot-kawachi { width:10px; height:10px; border-radius:50%; background:var(--c-kawachi); flex-shrink:0; }
+.dot-nishiwaki { width:10px; height:10px; border-radius:50%; background:var(--c-nishiwaki); flex-shrink:0; }
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 0.88rem;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-row .s-label { color: var(--c-text-muted); font-size: 0.8rem; width: 120px; flex-shrink: 0; }
+.stat-row .s-val { font-weight: 500; flex: 1; }
+.stat-row .s-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+.pill-high { background: rgba(255,107,107,0.15); color: var(--c-accent2); }
+.pill-mid  { background: rgba(78,205,196,0.15); color: var(--c-kawachi); }
+.pill-low  { background: rgba(168,224,99,0.15); color: var(--c-nishiwaki); }
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--c-border);
+  margin: 24px 0;
+}
+
+.progress-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  margin-top: 16px;
+}
+
+.ch1-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.ch1-tab {
+  padding: 7px 16px;
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border);
+  border-radius: 20px;
+  color: var(--c-text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ch1-tab:hover { border-color: var(--c-accent); color: var(--c-accent); }
+.ch1-tab.active {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+  background: rgba(91,140,255,0.1);
+}
+
+.predict-result-box {
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  animation: fadeSlideIn 0.35s ease;
+}
+.predict-correct {
+  background: rgba(62,201,176,0.1);
+  border: 1px solid rgba(62,201,176,0.3);
+}
+.predict-incorrect {
+  background: rgba(255,104,104,0.08);
+  border: 1px solid rgba(255,104,104,0.2);
+}
+.predict-result-box .p-title {
+  font-weight: 900;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.next-teaser {
+  background: rgba(91,140,255,0.06);
+  border: 1px solid rgba(91,140,255,0.2);
+  border-radius: var(--r-sm);
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+.next-teaser .nt-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--c-accent);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" style="width:16%"></div></div>
+
+<div class="chapter-header">
+  <div class="chapter-tag">Chapter 1</div>
+  <h1 class="chapter-title">3つの地域を<span>フラットに知る</span></h1>
+  <p class="chapter-desc">先入観を交えず、まずは客観的なデータを確認しましょう。</p>
+  <div class="timer-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>読了まで</span>
+    <span id="timer-count">10</span>
+    <span>秒</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 直感クイズ -->
+  <div class="card" id="predict-card">
+    <div class="card-label">直感チェック — まず予測してみよう</div>
+    <h3>3都市のうち、<strong>社会人の平均年収が最も高い</strong>のはどこだと思いますか？</h3>
+    <p style="color:var(--c-text-muted);font-size:0.85rem;margin-bottom:16px;">データを見る前に、直感で答えてください。</p>
+    <div class="quiz-options" id="predict-btns">
+      <button class="quiz-btn" id="pred_osaka"><span class="quiz-icon"></span>大阪市</button>
+      <button class="quiz-btn" id="pred_kawachi"><span class="quiz-icon"></span>河内長野市</button>
+      <button class="quiz-btn" id="pred_nishiwaki"><span class="quiz-icon"></span>西脇市</button>
+    </div>
+    <div id="predict-result" style="display:none;margin-top:16px;" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <!-- CITY GRID -->
+  <div class="city-grid" id="city-grid-section">
+    <!-- 大阪市 -->
+    <div class="city-card osaka">
+      <h3>大阪市</h3>
+      <span class="city-tag">都市型 — 利便性特化</span>
+      <div class="city-stat"><span class="stat-label">人口</span><span class="stat-val">約281万人</span></div>
+      <div class="city-stat"><span class="stat-label">家賃（1R）</span><span class="stat-val">約4.2万円</span></div>
+      <div class="city-stat"><span class="stat-label">交通</span><span class="stat-val">電車 数分間隔</span></div>
+      <div class="city-stat"><span class="stat-label">高齢化率</span><span class="stat-val">24.7%</span></div>
+      <a href="https://www.city.osaka.lg.jp/" target="_blank" rel="noopener" class="city-link">
+        大阪市公式HP
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+      </a>
+    </div>
+
+    <!-- 河内長野市 -->
+    <div class="city-card kawachi">
+      <h3>河内長野市</h3>
+      <span class="city-tag">バランス型</span>
+      <div class="city-stat"><span class="stat-label">人口</span><span class="stat-val">約9.6万人</span></div>
+      <div class="city-stat"><span class="stat-label">家賃（1R）</span><span class="stat-val">約3.0万円</span></div>
+      <div class="city-stat"><span class="stat-label">交通</span><span class="stat-val">主要駅まで30分</span></div>
+      <div class="city-stat"><span class="stat-label">高齢化率</span><span class="stat-val">37.4%</span></div>
+      <a href="https://www.city.kawachinagano.lg.jp/" target="_blank" rel="noopener" class="city-link">
+        河内長野市公式HP
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+      </a>
+    </div>
+
+    <!-- 西脇市 -->
+    <div class="city-card nishiwaki">
+      <h3>西脇市</h3>
+      <span class="city-tag">自然・環境重視型</span>
+      <div class="city-stat"><span class="stat-label">人口</span><span class="stat-val">約3.7万人</span></div>
+      <div class="city-stat"><span class="stat-label">家賃（1R）</span><span class="stat-val">約2.0万円</span></div>
+      <div class="city-stat"><span class="stat-label">交通</span><span class="stat-val">車必須・高速バスあり</span></div>
+      <div class="city-stat"><span class="stat-label">高齢化率</span><span class="stat-val">35.0%</span></div>
+      <a href="https://www.city.nishiwaki.lg.jp/" target="_blank" rel="noopener" class="city-link">
+        西脇市公式HP
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- 詳細比較 -->
+  <div class="card">
+    <div class="card-label">詳細比較</div>
+    <h3>主要指標を並べてみると</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>指標</th>
+          <th style="color:var(--c-osaka)">大阪市</th>
+          <th style="color:var(--c-kawachi)">河内長野市</th>
+          <th style="color:var(--c-nishiwaki)">西脇市</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>平均年収</td>
+          <td>442万円</td>
+          <td>486万円</td>
+          <td>473万円</td>
+        </tr>
+        <tr>
+          <td>家賃（1R目安）</td>
+          <td>約4.2万円</td>
+          <td>約3.0万円</td>
+          <td>約2.0万円</td>
+        </tr>
+        <tr>
+          <td>消費支出（年）</td>
+          <td>181万円</td>
+          <td>169万円</td>
+          <td>136万円</td>
+        </tr>
+        <tr>
+          <td>事業所数</td>
+          <td>34,597社</td>
+          <td>523社</td>
+          <td>448社</td>
+        </tr>
+        <tr>
+          <td>病院施設数</td>
+          <td>173施設</td>
+          <td>8施設</td>
+          <td>2施設</td>
+        </tr>
+        <tr>
+          <td>有効求人倍率</td>
+          <td>—</td>
+          <td>—</td>
+          <td>1.79倍</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      これはあくまで<strong>フラットな数字の羅列</strong>です。良い・悪いの判断はまだしないでください。次の章で、この数字が「生活」にどう影響するかを一緒に考えます。
+    </div>
+  </div>
+
+  <!-- 財務比較チャート -->
+  <div class="card">
+    <div class="card-label">財務データ可視化</div>
+    <h3>数字をグラフで見る</h3>
+    <div class="ch1-tabs" id="ch1-tabs">
+      <button class="ch1-tab active" data-metric="0">年収</button>
+      <button class="ch1-tab" data-metric="1">月額家賃</button>
+      <button class="ch1-tab" data-metric="2">消費支出（年）</button>
+    </div>
+    <div id="ch1-chart"></div>
+    <p id="ch1-insight" style="font-size:0.8rem;color:var(--c-text-muted);margin-top:10px;line-height:1.7;border-left:2px solid var(--c-border);padding-left:12px;"></p>
+  </div>
+
+  <!-- 次章への好奇心テキスト -->
+  <div class="next-teaser">
+    <div class="nt-label">▶ 次の章で明かされること</div>
+    <strong>「年収が高い都市 = 手元にお金が残る都市」は本当でしょうか？</strong><br>
+    年収のランキングは分かりました。では<em>実際に使えるお金（可処分所得）</em>では、順位は同じでしょうか？次章で、多くの人が見落としている「逆転」が起きます。
+  </div>
+
+  <p class="progress-note" id="progress-note">直感クイズに答えると、または10秒後に次へ進めます</p>
+
+  <button id="btn_to_ch2" class="btn-primary" disabled>
+    第2章：お金について深く考える →
+  </button>
+
+</div><!-- /container -->
+
+<script>
+// ── localStorage チェック
+const stored = localStorage.getItem('residence_study_log');
+if (!stored) { window.location.href = 'index.html'; }
+
+// ── ボタン解放管理
+let timerDone = false;
+let scrollDone = false;
+let quizDone  = false;
+let unlocked  = false;
+
+function unlock() {
+  if (unlocked) return;
+  unlocked = true;
+  const btn = document.getElementById('btn_to_ch2');
+  btn.disabled = false;
+  document.getElementById('progress-note').textContent = '次に進む準備ができました';
+}
+
+// 10秒カウントダウン（フォールバック）
+let count = 10;
+const display = document.getElementById('timer-count');
+const interval = setInterval(() => {
+  count--;
+  display.textContent = count;
+  if (count <= 0) {
+    clearInterval(interval);
+    timerDone = true;
+    unlock();
+  }
+}, 1000);
+
+// スクロール最下部検知
+window.addEventListener('scroll', () => {
+  if (scrollDone) return;
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+    scrollDone = true;
+    clearInterval(interval);
+    document.getElementById('timer-count').textContent = '0';
+    unlock();
+  }
+});
+
+// ── 直感クイズ（年収予測）
+const CORRECT_PRED = 'pred_kawachi';
+document.querySelectorAll('#predict-btns .quiz-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isCorrect = (btn.id === CORRECT_PRED);
+
+    // ボタン全無効化＆正解マーク
+    document.querySelectorAll('#predict-btns .quiz-btn').forEach(b => {
+      b.disabled = true;
+      if (b.id === CORRECT_PRED) {
+        b.classList.add('correct');
+        b.querySelector('.quiz-icon').textContent = '○';
+      } else if (b.id === btn.id && !isCorrect) {
+        b.classList.add('incorrect');
+        b.querySelector('.quiz-icon').textContent = '×';
+      }
+    });
+
+    // 結果メッセージ表示
+    const resEl = document.getElementById('predict-result');
+    resEl.style.display = 'block';
+    if (isCorrect) {
+      resEl.innerHTML = `<div class="predict-result-box predict-correct">
+        <div class="p-title">正解！ その通りです。</div>
+        河内長野市の平均年収は <strong>486万円</strong> で3都市最高。大阪市（442万円）を上回っています。<br>
+        <span style="color:var(--c-text-muted);font-size:0.85rem;">「都会＝高収入」という先入観は、すでに崩れましたか？</span>
+      </div>`;
+    } else {
+      resEl.innerHTML = `<div class="predict-result-box predict-incorrect">
+        <div class="p-title">実は… 河内長野市が486万円で最高！</div>
+        大阪市は <strong>442万円で3都市中最下位</strong> です。驚きませんか？<br>
+        <span style="color:var(--c-text-muted);font-size:0.85rem;">「都会が一番稼げる」は必ずしも正しくありません。次の章でさらに深く掘り下げます。</span>
+      </div>`;
+    }
+
+    // クイズ完了 → ボタン解放
+    quizDone = true;
+    clearInterval(interval);
+    document.getElementById('timer-count').textContent = '0';
+    unlock();
+  });
+});
+
+// ── 財務比較チャート
+const CH1_METRICS = [
+  {
+    unit: '万円',
+    insight: '河内長野市が3都市で最も年収が高い（486万円）。大阪市（442万円）より約44万円多い。ただし年収だけで豊かさは測れません。次の章で確認します。',
+    cities: [
+      { name: '大阪市', val: 442, color: 'var(--c-osaka)' },
+      { name: '河内長野市', val: 486, color: 'var(--c-kawachi)' },
+      { name: '西脇市', val: 473, color: 'var(--c-nishiwaki)' }
+    ]
+  },
+  {
+    unit: '万円/月',
+    insight: '大阪市の家賃（4.2万）は西脇市（2.0万）の約2倍。年換算で約26万円の差になります。',
+    cities: [
+      { name: '大阪市', val: 4.2, color: 'var(--c-osaka)' },
+      { name: '河内長野市', val: 3.0, color: 'var(--c-kawachi)' },
+      { name: '西脇市', val: 2.0, color: 'var(--c-nishiwaki)' }
+    ]
+  },
+  {
+    unit: '万円/年',
+    insight: '大阪市の年間消費支出（181万円）は西脇市（136万円）より45万円多い。「都会の生活コスト」の大きさが数字に表れています。',
+    cities: [
+      { name: '大阪市', val: 181, color: 'var(--c-osaka)' },
+      { name: '河内長野市', val: 169, color: 'var(--c-kawachi)' },
+      { name: '西脇市', val: 136, color: 'var(--c-nishiwaki)' }
+    ]
+  }
+];
+
+function renderCh1Chart(idx) {
+  const m = CH1_METRICS[idx];
+  const max = Math.max(...m.cities.map(c => c.val));
+  const el = document.getElementById('ch1-chart');
+  el.innerHTML = m.cities.map(c => {
+    const pct = Math.round((c.val / max) * 100);
+    return `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px">
+        <span style="color:${c.color};font-weight:700">${c.name}</span>
+        <span style="font-weight:700;color:var(--c-text)">${c.val} ${m.unit}</span>
+      </div>
+      <div style="height:12px;background:var(--c-border);border-radius:6px;overflow:hidden">
+        <div style="height:100%;background:${c.color};border-radius:6px;width:0;transition:width 0.8s cubic-bezier(.23,1,.32,1)" data-target="${pct}"></div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ch1-insight').textContent = m.insight;
+  setTimeout(() => {
+    el.querySelectorAll('[data-target]').forEach(b => { b.style.width = b.dataset.target + '%'; });
+  }, 50);
+}
+
+document.querySelectorAll('.ch1-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ch1-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCh1Chart(parseInt(btn.dataset.metric));
+  });
+});
+renderCh1Chart(0);
+
+// ── 遷移
+document.getElementById('btn_to_ch2').addEventListener('click', () => {
+  window.location.href = 'ch2.html';
+});
+</script>
+</body>
+</html>

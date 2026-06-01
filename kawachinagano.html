@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>河内長野市について - 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.city-detail-header {
+  padding: 64px 20px 40px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(245,166,35,0.04) 100%);
+}
+.city-detail-tag {
+  display: inline-block;
+  background: var(--c-kawachi);
+  color: #0e0f13;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.city-detail-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+.city-detail-desc {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.city-body { max-width: 900px; margin: 0 auto; padding: 32px 28px 80px; }
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+@media (min-width: 600px) { .quick-stats { grid-template-columns: repeat(4, 1fr); } }
+.qs-item {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 14px 10px;
+  text-align: center;
+}
+.qs-item.qs-best { border-color: rgba(62,201,176,0.35); background: rgba(62,201,176,0.05); }
+.qs-icon { font-size: 1.3rem; margin-bottom: 5px; }
+.qs-value {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--c-kawachi);
+  line-height: 1.2;
+}
+.qs-label { font-size: 0.68rem; color: var(--c-text-muted); margin-top: 4px; line-height: 1.4; }
+.qs-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  margin-top: 5px;
+  display: inline-block;
+}
+.qs-badge-best { background: rgba(62,201,176,0.12); color: var(--c-accent3); }
+.qs-badge-mid  { background: rgba(245,166,35,0.12); color: #d49a10; }
+
+.dc {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.dc-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: var(--c-text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dc-title span { color: var(--c-kawachi); }
+
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 12px; padding-bottom: 14px; position: relative; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::after {
+  content: '';
+  position: absolute;
+  left: 44px;
+  top: 22px;
+  bottom: 0;
+  width: 1px;
+  background: var(--c-border);
+}
+.tl-item:last-child::after { display: none; }
+.tl-time {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-kawachi);
+  width: 42px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.tl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-kawachi);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.tl-text { font-size: 0.85rem; line-height: 1.5; color: var(--c-text); }
+.tl-sub  { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 2px; }
+.tl-highlight {
+  display: inline-block;
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 6px;
+  padding: 1px 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-kawachi);
+  margin-top: 3px;
+}
+
+.feature-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.ftag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  line-height: 1;
+}
+.ftag.good { background: rgba(62,201,176,0.1); color: var(--c-accent3); border: 1px solid rgba(62,201,176,0.25); }
+.ftag.warn { background: rgba(245,166,35,0.1); color: #d49a10; border: 1px solid rgba(245,166,35,0.3); }
+
+.compare-section { margin: 8px 0; }
+.cmp-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 8px; }
+.cmp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.cmp-name { font-size: 0.7rem; width: 52px; flex-shrink: 0; color: var(--c-text-muted); }
+.cmp-name.current { color: var(--c-kawachi); font-weight: 700; }
+.cmp-track { flex: 1; height: 8px; background: var(--c-border); border-radius: 4px; overflow: hidden; }
+.cmp-fill { height: 100%; border-radius: 4px; width: 0; transition: width 0.9s cubic-bezier(.23,1,.32,1); }
+.cmp-num { font-size: 0.7rem; font-weight: 700; width: 46px; text-align: right; }
+.cmp-num.current { color: var(--c-kawachi); }
+
+.city-nav { display: flex; justify-content: center; gap: 12px; padding: 0 28px 60px; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
+.btn-city-nav {
+  padding: 14px 24px;
+  border-radius: var(--r-sm);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary-k { background: var(--c-kawachi); border: 1.5px solid var(--c-kawachi); color: #0e0f13; }
+.btn-primary-k:hover { background: #f7b93a; }
+.btn-sec { background: transparent; border: 1.5px solid var(--c-border); color: var(--c-text-muted); }
+.btn-sec:hover { border-color: var(--c-kawachi); color: var(--c-kawachi); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:30%"></div></div>
+
+<section class="city-detail-header">
+  <div class="city-detail-tag">バランス型</div>
+  <h1 class="city-detail-title">河内長野市</h1>
+  <p class="city-detail-desc">大阪と和歌山の中間に位置する緑豊かな自治体。<strong style="color:var(--c-kawachi)">年収は3都市で最高</strong>、行政サービス改革度は<strong style="color:var(--c-kawachi)">全国1位</strong>という意外な実力派です。</p>
+</section>
+
+<div class="city-body">
+
+  <!-- クイックスタッツ -->
+  <div class="quick-stats">
+    <div class="qs-item qs-best">
+      <div class="qs-icon">¥</div>
+      <div class="qs-value">486万円</div>
+      <div class="qs-label">平均年収 / 年</div>
+      <div class="qs-badge qs-badge-best">3都市中 最高！</div>
+    </div>
+    <div class="qs-item">
+      <div class="qs-icon">家賃</div>
+      <div class="qs-value">3.0万円</div>
+      <div class="qs-label">月額家賃（1R目安）</div>
+      <div class="qs-badge qs-badge-mid">中程度</div>
+    </div>
+    <div class="qs-item">
+      <div class="qs-icon">手取</div>
+      <div class="qs-value">281万円</div>
+      <div class="qs-label">可処分所得 / 年</div>
+      <div class="qs-badge qs-badge-mid">大阪の1.3倍</div>
+    </div>
+    <div class="qs-item">
+      <div class="qs-icon">貯蓄</div>
+      <div class="qs-value">3.5万円</div>
+      <div class="qs-label">月間貯蓄ペース</div>
+      <div class="qs-badge qs-badge-mid">大阪の約2倍</div>
+    </div>
+  </div>
+
+  <!-- 一日の過ごし方 -->
+  <div class="dc">
+    <div class="dc-title">河内長野市での<span>一日の過ごし方（社会人1年目）</span></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-time">07:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">緑の住宅街から南海電鉄で通勤（30分）</div>
+          <div class="tl-sub">朝は座れることも多い。通勤時間は読書や勉強に使える。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">12:30</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">大阪のオフィス近くでランチ or テイクアウト</div>
+          <div class="tl-sub">都市部の職場環境を享受しつつ、帰宅先は静かな環境。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">19:00</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">退勤。電車で帰宅（ラッシュ後でゆったり）</div>
+          <div class="tl-sub">週末は近くの山でハイキング。都市と自然の両方が手の届く距離。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">21:00</div>
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-text">帰宅後は趣味の時間。今月の貯金ペース→</div>
+          <div class="tl-highlight">月3.5万円（年間42万円）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 強み -->
+  <div class="dc">
+    <div class="dc-title">河内長野市の<span>強み</span></div>
+    <div class="feature-tags">
+      <span class="ftag good">行政サービス改革度 全国1位</span>
+      <span class="ftag good">年収は3都市で最高（486万）</span>
+      <span class="ftag good">待機児童ほぼゼロ</span>
+      <span class="ftag good">子育て世帯への給付金あり</span>
+      <span class="ftag good">空き家バンク制度を運用中</span>
+      <span class="ftag good">自然と都市のバランスが良好</span>
+      <span class="ftag good">ワンストップの市役所対応</span>
+      <span class="ftag good">大阪まで電車30分圏内</span>
+    </div>
+  </div>
+
+  <!-- 注意点 -->
+  <div class="dc">
+    <div class="dc-title">注意点・<span>デメリット</span></div>
+    <div class="feature-tags">
+      <span class="ftag warn">大阪市内まで30分の移動が必要</span>
+      <span class="ftag warn">夜の飲食・娯楽の選択肢がやや少ない</span>
+      <span class="ftag warn">地区によっては車が必要</span>
+      <span class="ftag warn">大病院は大阪市内へ</span>
+    </div>
+  </div>
+
+  <!-- 3都市比較バー -->
+  <div class="dc">
+    <div class="dc-title">他都市との<span>比較</span></div>
+    <div class="compare-section" id="compare-sec" role="img" aria-label="3都市の比較グラフ。平均年収：大阪市442万円、河内長野市486万円（最高）、西脇市473万円。可処分所得：大阪市211万円（最低）、河内長野市281万円、西脇市313万円（最高）。">
+      <div class="cmp-label" style="margin-bottom:14px">平均年収（年）</div>
+      <div class="cmp-row">
+        <div class="cmp-name">大阪市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-osaka)" data-w="91"></div></div>
+        <div class="cmp-num">442万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name current">→ 河内長野</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-kawachi)" data-w="100"></div></div>
+        <div class="cmp-num current">486万 ★</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">西脇市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-nishiwaki)" data-w="97"></div></div>
+        <div class="cmp-num">473万</div>
+      </div>
+
+      <div class="cmp-label" style="margin-top:20px;margin-bottom:14px">可処分所得（年）</div>
+      <div class="cmp-row">
+        <div class="cmp-name">大阪市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-osaka)" data-w="67"></div></div>
+        <div class="cmp-num">211万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name current">→ 河内長野</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-kawachi)" data-w="90"></div></div>
+        <div class="cmp-num current">281万</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-name">西脇市</div>
+        <div class="cmp-track"><div class="cmp-fill" style="background:var(--c-nishiwaki)" data-w="100"></div></div>
+        <div class="cmp-num">313万</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:14px;font-size:0.85rem;">
+      「年収が高くて家賃も手頃」というバランスの良さが、河内長野市の最大の強みです。大阪へのアクセスを保ちながら、<strong>大阪市より年間70万円多く手元に残ります。</strong>
+    </div>
+  </div>
+
+  <!-- 公式情報 -->
+  <div class="dc">
+    <div class="dc-title"><span>公式情報</span></div>
+    <p style="font-size:0.88rem;color:var(--c-text-muted);margin-bottom:14px;">移住支援・子育て給付金・空き家バンクの詳細はこちら。</p>
+    <a href="https://www.city.kawachinagano.lg.jp/" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--c-kawachi);color:#0e0f13;text-decoration:none;border-radius:var(--r-sm);font-size:0.88rem;font-weight:700;">
+      河内長野市公式HP
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<div class="city-nav">
+  <button class="btn-city-nav btn-sec" onclick="window.location.href='osaka.html'">← 大阪市を見直す</button>
+  <button class="btn-city-nav btn-primary-k" onclick="window.location.href='nishiwaki.html'">西脇市を見る →</button>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+const obs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.cmp-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+    obs.disconnect();
+  }
+}, { threshold: 0.4 });
+obs.observe(document.getElementById('compare-sec'));
+</script>
+</body>
+</html>

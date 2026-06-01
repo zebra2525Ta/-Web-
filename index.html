@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { background: var(--c-bg); }
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(6,95,70,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 70% 70%, rgba(29,78,216,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  background: rgba(6,95,70,0.08);
+  border: 1px solid rgba(6,95,70,0.25);
+  padding: 6px 18px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+.hero-title {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 40px;
+}
+
+.hero-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 860px;
+  margin-top: 50px;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-image-card {
+  aspect-ratio: 1;
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-image-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(28,25,23,0.12);
+}
+
+.hero-image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-title .line2 {
+  display: block;
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  color: var(--c-text-muted);
+  font-weight: 400;
+  margin-top: 8px;
+  letter-spacing: 0;
+}
+.hero-sub {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto 48px;
+  line-height: 1.8;
+}
+.scroll-down {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* Form section */
+.form-section {
+  background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-surface) 100%);
+  padding: 40px 0 80px;
+}
+.section-intro {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.section-intro h2 {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.section-intro p { color: var(--c-text-muted); font-size: 0.88rem; }
+
+.form-step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(6,95,70,0.1);
+  border: 1px solid rgba(6,95,70,0.25);
+  color: var(--c-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-content { flex: 1; }
+.step-content .card { margin-bottom: 0; }
+
+.lock-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">居住地選択 Web 教材 — ID理論に基づく自己リフレクション</div>
+  <h1 class="hero-title">
+    なんとなく、都会がいい。
+    <span class="line2">その直感は、正しいですか？</span>
+  </h1>
+  <p class="hero-sub">
+    大阪市・河内長野市・西脇市。<br>
+    3つの地域を客観データで比べ、<br>
+    あなたの「将来の住む場所」を本気で考えてみましょう。
+  </p>
+  
+  <div class="hero-images">
+    <div class="hero-image-card">
+      <img src="image/梅田都会.jpg" alt="大阪市梅田の超高層ビル群（都市部の利便性と密集性の例）">
+    </div>
+    <div class="hero-image-card">
+      <img src="image/西脇田舎.jpeg" alt="西脇市の農村風景（地方部の自然環境と生活空間の例）">
+    </div>
+  </div>
+  
+  <div class="scroll-down">
+    <span>scroll</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><path d="M8 4v16M3 15l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section">
+  <div class="container">
+    <div class="section-intro">
+      <h2>はじめに、今のあなたの考えを教えてください</h2>
+      <p>学習前の先入観・直感を記録します。あとで変化を比べます。</p>
+    </div>
+
+    <!-- Q1 -->
+    <div class="form-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="card">
+          <div class="card-label">Q1 — 都会の定義</div>
+          <h3>あなたにとって「都会」のイメージは、主に何ですか？</h3>
+          <div class="radio-group" id="q1-group">
+            <label class="radio-option" data-val="convenience">
+              <input type="radio" name="city_def" value="convenience">
+              <div class="radio-dot"></div>
+              <span>交通・通勤の利便性</span>
+            </label>
+            <label class="radio-option" data-val="commerce">
+              <input type="radio" name="city_def" value="commerce">
+              <div class="radio-dot"></div>
+              <span>商業・買い物の豊富さ</span>
+            </label>
+            <label class="radio-option" data-val="entertainment">
+              <input type="radio" name="city_def" value="entertainment">
+              <div class="radio-dot"></div>
+              <span>娯楽・エンタメの充実</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div style="margin-top: 28px;">
+      <p class="lock-note">回答すると次へ進めます</p>
+      <button id="btn_start" class="btn-primary" style="margin-top:12px;">
+        次へ →
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+// ── Radio 選択スタイル
+document.querySelectorAll('.radio-group').forEach(group => {
+  group.querySelectorAll('.radio-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const radio = opt.querySelector('input[type="radio"]');
+      radio.checked = true;
+      group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      checkValidity();
+    });
+  });
+});
+
+// ── バリデーション（Q1のみチェック）
+function checkValidity() {
+  const q1 = document.querySelector('input[name="city_def"]:checked');
+  document.getElementById('btn_start').disabled = !q1;
+}
+checkValidity();
+
+// ── Submit
+document.getElementById('btn_start').addEventListener('click', () => {
+  const q1 = document.querySelector('input[name="city_def"]:checked');
+
+  if (!q1) {
+    alert('質問に回答してください');
+    return;
+  }
+
+  // 学習前データを保存（Q1のみ）
+  const data = {
+    user_before_data: {
+      city_def: q1.value,
+      timestamp_before: new Date().toISOString()
+    }
+  };
+  localStorage.setItem('residence_study_log', JSON.stringify(data));
+  
+  // 中間調査ページに遷移
+  window.location.href = 'checkpoint.html';
+});
+</script>
+</body>
+</html>

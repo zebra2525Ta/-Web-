@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第4章：ライフスタイルと支援制度 | 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.section-h {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+  margin: 14px 0;
+}
+@media (max-width:600px) { .support-grid { grid-template-columns: 1fr; } }
+.support-card {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  font-size: 0.83rem;
+  line-height: 1.7;
+}
+.support-card h4 {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 900;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+}
+.support-card ul {
+  padding-left: 16px;
+  color: var(--c-text-muted);
+}
+.support-card ul li { margin-bottom: 4px; }
+.support-card.osaka { border-top: 2px solid var(--c-osaka); }
+.support-card.osaka h4 { color: var(--c-osaka); }
+.support-card.kawachi { border-top: 2px solid var(--c-kawachi); }
+.support-card.kawachi h4 { color: var(--c-kawachi); }
+.support-card.nishiwaki { border-top: 2px solid var(--c-nishiwaki); }
+.support-card.nishiwaki h4 { color: var(--c-nishiwaki); }
+
+.scenario-card.osaka .sc-city { color: var(--c-osaka); }
+.scenario-card.kawachi .sc-city { color: var(--c-kawachi); }
+.scenario-card.nishiwaki .sc-city { color: var(--c-nishiwaki); }
+
+.section-divider { border: none; border-top: 1px solid var(--c-border); margin: 24px 0; }
+
+.personal-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(6,95,70,0.06);
+  border: 1.5px solid rgba(6,95,70,0.2);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+.personal-banner .pb-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+.personal-banner strong { color: var(--c-accent); }
+
+.axis-highlight td:first-child { font-weight: 700; color: var(--c-text); }
+.axis-highlight {
+  background: rgba(91,140,255,0.07) !important;
+  outline: 1px solid rgba(91,140,255,0.3);
+  outline-offset: -1px;
+}
+.axis-highlight td:first-child::after {
+  content: ' ← あなたの軸';
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--c-accent);
+  margin-left: 6px;
+}
+
+/* 5年後貯金シミュレーション */
+.savings-sim-grid { display: flex; flex-direction: column; gap: 16px; margin: 16px 0; }
+.savings-row { display: flex; align-items: center; gap: 14px; }
+.savings-city-info { width: 90px; flex-shrink: 0; }
+.savings-city-name { font-size: 0.78rem; font-weight: 700; line-height: 1.3; }
+.savings-monthly { font-size: 0.7rem; color: var(--c-text-muted); margin-top: 2px; }
+.savings-bar-wrap { flex: 1; }
+.savings-bar-track {
+  height: 18px; background: var(--c-border);
+  border-radius: 9px; overflow: hidden; margin-bottom: 4px;
+}
+.savings-bar-fill {
+  height: 100%; border-radius: 9px; width: 0;
+  transition: width 1.2s cubic-bezier(.23,1,.32,1);
+}
+.savings-amount {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.savings-5y-label { font-size: 0.68rem; color: var(--c-text-muted); }
+
+.savings-diff-callout {
+  background: rgba(62,201,176,0.08);
+  border: 1px solid rgba(62,201,176,0.25);
+  border-radius: var(--r-sm);
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-size: 0.87rem;
+  line-height: 1.7;
+}
+
+.next-teaser {
+  background: rgba(91,140,255,0.06);
+  border: 1px solid rgba(91,140,255,0.2);
+  border-radius: var(--r-sm);
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+.next-teaser .nt-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--c-accent);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+/* インタラクティブシミュレーター */
+.sim-inputs {
+  background: var(--c-surface2);
+  border: 1.5px solid var(--c-border-bright);
+  border-radius: var(--r-sm);
+  padding: 16px 20px; margin-bottom: 20px;
+}
+.sim-row { margin-bottom: 16px; }
+.sim-row:last-child { margin-bottom: 0; }
+.sim-label-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.sim-label-text { font-size: 0.8rem; font-weight: 700; color: var(--c-text-muted); }
+.sim-val-badge {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 900; font-size: 1.05rem; color: var(--c-accent);
+}
+input[type=range].sim-slider {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 3px; outline: none; cursor: pointer;
+}
+input[type=range].sim-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  background: var(--c-accent); border-radius: 50%;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(91,140,255,0.45);
+  transition: transform 0.1s;
+}
+input[type=range].sim-slider:active::-webkit-slider-thumb { transform: scale(1.15); }
+input[type=range].sim-slider:focus { outline: none; }
+input[type=range].sim-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(91,140,255,0.4);
+}
+input[type=range].sim-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  background: var(--c-accent); border-radius: 50%; border: none; cursor: pointer;
+}
+/* 読了プログレスバー */
+body { padding-bottom: 56px; }
+.rpb {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  z-index: 200;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.rpb.visible { opacity: 1; transform: translateY(0); }
+.rpb-track {
+  flex: 1; height: 6px;
+  background: var(--c-border); border-radius: 3px; overflow: hidden;
+}
+.rpb-fill {
+  height: 100%; width: 0;
+  background: var(--c-accent); border-radius: 3px;
+  transition: width 0.15s ease, background 0.3s;
+}
+.rpb-fill.done { background: #3ec9b0; }
+.rpb-text {
+  font-size: 0.75rem; color: var(--c-text-muted);
+  white-space: nowrap; min-width: 160px; text-align: right;
+}
+.rpb-text.done { color: #3ec9b0; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+
+<div class="chapter-header">
+  <div class="chapter-tag">Chapter 4</div>
+  <h1 class="chapter-title">ライフスタイルと<span>支援制度の比較</span></h1>
+  <p class="chapter-desc">生活のリアルな解像度を上げましょう。表面的なイメージを削ぎ落とします。</p>
+</div>
+
+<div class="container">
+
+  <!-- パーソナライズバナー -->
+  <div class="personal-banner" id="personal-banner" style="display:none">
+    <span class="pb-icon">→</span>
+    <span id="personal-banner-text"></span>
+  </div>
+
+  <!-- 行政サービス比較 -->
+  <div class="card">
+    <div class="card-label">行政サービス・支援制度の比較</div>
+    <h3 class="section-h">主な生活支援制度</h3>
+    <div class="support-grid">
+      <div class="support-card osaka">
+        <h4>大阪市</h4>
+        <ul>
+          <li>保育所・認定こども園が多数</li>
+          <li>生活保護・就労支援が充実</li>
+          <li>医療機関へのアクセスが極めて良好</li>
+          <li>多言語対応サービスあり</li>
+          <li>ただし待機児童が発生しやすい</li>
+        </ul>
+      </div>
+      <div class="support-card kawachi">
+        <h4>河内長野市</h4>
+        <ul>
+          <li>行政サービス改革度 <strong>全国1位</strong></li>
+          <li>子育て世帯への給付金あり</li>
+          <li>空き家バンク制度を運用中</li>
+          <li>コンパクトな市役所でワンストップ対応</li>
+          <li>待機児童はほぼゼロ</li>
+        </ul>
+      </div>
+      <div class="support-card nishiwaki">
+        <h4>西脇市</h4>
+        <ul>
+          <li>移住支援金（最大100万円）</li>
+          <li>若者定住促進住宅補助</li>
+          <li>テレワーク移住者への支援あり</li>
+          <li>子育てサポート拠点を整備中</li>
+          <li>住宅取得補助が手厚い</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px;">
+      <strong style="color:var(--c-accent3);">「安心度」の見方を変えてみましょう</strong><br>
+      病院の「数」は大阪市が最多です。しかし混雑・待機児童（大阪市では発生）を考慮すると、<strong>行政の手厚さは中都市が勝る面もあります。</strong>河内長野市の「行政サービス改革度全国1位」は、サポートの質を表す指標です。
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- 生活比較表 -->
+  <div class="card">
+    <div class="card-label">生活環境の比較表</div>
+    <h3 class="section-h">暮らしやすさを多角的に比べる</h3>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th scope="col" style="text-align:left;color:var(--c-text-muted);background:transparent;">項目</th>
+            <th scope="col" class="osaka-h">大阪市</th>
+            <th scope="col" class="kawachi-h">河内長野市</th>
+            <th scope="col" class="nishiwaki-h">西脇市</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="row-access">
+            <th scope="row" style="text-align:left;font-weight:400">交通利便性</th>
+            <td><span class="star">★★★★★</span></td>
+            <td><span class="star">★★★</span>☆☆</td>
+            <td><span class="star">★★</span>☆☆☆</td>
+          </tr>
+          <tr id="row-nature">
+            <th scope="row" style="text-align:left;font-weight:400">自然・住環境</th>
+            <td><span class="star">★★</span>☆☆☆</td>
+            <td><span class="star">★★★★</span>☆</td>
+            <td><span class="star">★★★★★</span></td>
+          </tr>
+          <tr id="row-money">
+            <th scope="row" style="text-align:left;font-weight:400">生活コスト</th>
+            <td>高い</td>
+            <td>中程度</td>
+            <td>低い</td>
+          </tr>
+          <tr>
+            <th scope="row" style="text-align:left;font-weight:400">雇用・就職機会</th>
+            <td><span class="star">★★★★★</span></td>
+            <td><span class="star">★★★</span>☆☆</td>
+            <td><span class="star">★★★</span>☆☆</td>
+          </tr>
+          <tr>
+            <th scope="row" style="text-align:left;font-weight:400">子育て環境</th>
+            <td>施設多・混雑あり</td>
+            <td>充実・余裕あり</td>
+            <td>手厚い補助・施設は少なめ</td>
+          </tr>
+          <tr>
+            <th scope="row" style="text-align:left;font-weight:400">医療アクセス</th>
+            <td><span class="star">★★★★★</span></td>
+            <td><span class="star">★★★</span>☆☆</td>
+            <td><span class="star">★★</span>☆☆☆</td>
+          </tr>
+          <tr id="row-private">
+            <th scope="row" style="text-align:left;font-weight:400">地域コミュニティ</th>
+            <td>希薄な傾向</td>
+            <td>バランス型</td>
+            <td>密接・つながりが強い</td>
+          </tr>
+          <tr>
+            <th scope="row" style="text-align:left;font-weight:400">テレワーク適性</th>
+            <td>環境が整う</td>
+            <td>高い</td>
+            <td>非常に高い</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:16px;">
+      <strong style="color:var(--c-accent3);">「お金」の罠：年収より可処分所得</strong><br>
+      都会は年収が高いですが、それ以上に家賃と生活コストが高いため、<strong>実は手元にお金が残りません。</strong>西脇市では年間313万円が自由になるお金。大阪市（211万円）との差は年間約102万円です。
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- レーダーチャート -->
+  <div class="card">
+    <div class="card-label">総合評価レーダー</div>
+    <h3 class="section-h">6軸で3都市を比べる</h3>
+    <p style="font-size:0.8rem;color:var(--c-text-muted);margin-bottom:12px;">交通・住環境・経済・雇用・子育て・テレワークの6軸で評価。面積が大きいほど総合的に優れています。</p>
+    <div style="display:flex;justify-content:center;">
+      <svg id="radar-ch4" viewBox="0 0 320 320" width="100%" style="max-width:380px;display:block" role="img" aria-label="3都市の6軸レーダーチャート。大阪市（青）は交通・雇用で高評価。河内長野市（橙）は子育て環境で最高。西脇市（紫）は自然・経済・テレワーク適性で最高評価。"></svg>
+    </div>
+    <div style="display:flex;justify-content:center;gap:20px;font-size:0.8rem;margin-top:10px;flex-wrap:wrap;">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-osaka);display:inline-block;border-radius:2px"></span>大阪市</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-kawachi);display:inline-block;border-radius:2px"></span>河内長野市</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-nishiwaki);display:inline-block;border-radius:2px"></span>西脇市</span>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- 生活シナリオ -->
+  <div class="card">
+    <div class="card-label">時間軸シミュレーション</div>
+    <h3 class="section-h">社会人1年目・一人暮らし — 各都市で暮らすと</h3>
+    <div class="scenario-cards">
+      <div class="scenario-card osaka">
+        <div class="sc-city">大阪市</div>
+        <p>
+          年収442万円。家賃・食費・交通費を払うと手元に残るのは約<strong>211万円</strong>。<br>
+          職場まで電車5分、コンビニは徒歩1分。仕事帰りに飲み会・イベント。<br>
+          貯金は月<strong>約1.5万円</strong>ペース。忙しいが選択肢は多い。
+        </p>
+      </div>
+      <div class="scenario-card kawachi">
+        <div class="sc-city">河内長野市</div>
+        <p>
+          年収486万円。生活費が抑えられ手元に<strong>281万円</strong>。<br>
+          大阪市内まで電車30分、静かな環境で帰宅後に趣味の時間。<br>
+          月<strong>約3.5万円</strong>の貯蓄が可能。週末ハイキングや外食を楽しめる。
+        </p>
+      </div>
+      <div class="scenario-card nishiwaki">
+        <div class="sc-city">西脇市</div>
+        <p>
+          年収473万円。家賃2万・食費も安く手元に<strong>313万円</strong>。<br>
+          車通勤、自然の中の広い部屋。移住支援金で初年度に最大100万円加算。<br>
+          月<strong>約5万円</strong>の貯蓄が可能。テレワーク勤務なら都市並みの仕事も。
+        </p>
+      </div>
+    </div>
+
+    <div class="callout">
+      どのシナリオが「良い」かは、<strong>あなたの価値観次第</strong>です。キャリアを積みたい・人とのつながりを大事にしたい・自然の中でゆっくり生きたい——それぞれに合った選択があります。
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- 5年後の貯金シミュレーション（インタラクティブ） -->
+  <div class="card">
+    <div class="card-label">インタラクティブ・シミュレーション</div>
+    <h3 class="section-h">あなたの数字で計算する「5年後の貯金」</h3>
+    <p style="font-size:0.82rem;color:var(--c-text-muted);margin-bottom:18px;">
+      スライダーを動かすと、3都市の5年後貯金額がリアルタイムで更新されます。
+    </p>
+
+    <div class="sim-inputs">
+      <div class="sim-row">
+        <div class="sim-label-row">
+          <span class="sim-label-text">手取り月収</span>
+          <span><span class="sim-val-badge" id="sim-income-val">25</span><span style="font-size:0.78rem;color:var(--c-text-muted)"> 万円/月</span></span>
+        </div>
+        <input type="range" id="income-slider" class="sim-slider" min="15" max="45" value="25" step="1"
+               aria-label="手取り月収（万円）" aria-valuemin="15" aria-valuemax="45" aria-valuenow="25">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--c-text-muted);margin-top:4px"><span>15万</span><span>45万</span></div>
+      </div>
+      <div class="sim-row">
+        <div class="sim-label-row">
+          <span class="sim-label-text">希望の家賃（大阪市水準）</span>
+          <span><span class="sim-val-badge" id="sim-rent-val">5</span><span style="font-size:0.78rem;color:var(--c-text-muted)"> 万円/月</span></span>
+        </div>
+        <input type="range" id="rent-slider" class="sim-slider" min="3" max="12" value="5" step="0.5"
+               aria-label="希望の家賃・大阪市水準（万円）" aria-valuemin="3" aria-valuemax="12" aria-valuenow="5">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--c-text-muted);margin-top:4px"><span>3万</span><span>12万</span></div>
+      </div>
+    </div>
+
+    <div class="savings-sim-grid" id="savings-sim">
+      <div class="savings-row">
+        <div class="savings-city-info">
+          <div class="savings-city-name" style="color:var(--c-osaka)">大阪市</div>
+          <div class="savings-monthly">月 <span id="sim-monthly-osaka">—</span>万円<br><span style="font-size:0.65rem;opacity:0.75">家賃 <span id="sim-rent-osaka">5.0</span>万</span></div>
+        </div>
+        <div class="savings-bar-wrap">
+          <div class="savings-bar-track">
+            <div class="savings-bar-fill" id="sim-bar-osaka" style="background:var(--c-osaka)"></div>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <span class="savings-amount" style="color:var(--c-osaka)" id="sim-total-osaka">0</span>
+            <span class="savings-5y-label">万円（5年後）</span>
+          </div>
+        </div>
+      </div>
+      <div class="savings-row">
+        <div class="savings-city-info">
+          <div class="savings-city-name" style="color:var(--c-kawachi)">河内長野市</div>
+          <div class="savings-monthly">月 <span id="sim-monthly-kawachi">—</span>万円<br><span style="font-size:0.65rem;opacity:0.75">家賃 <span id="sim-rent-kawachi">3.6</span>万</span></div>
+        </div>
+        <div class="savings-bar-wrap">
+          <div class="savings-bar-track">
+            <div class="savings-bar-fill" id="sim-bar-kawachi" style="background:var(--c-kawachi)"></div>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <span class="savings-amount" style="color:var(--c-kawachi)" id="sim-total-kawachi">0</span>
+            <span class="savings-5y-label">万円（5年後）</span>
+          </div>
+        </div>
+      </div>
+      <div class="savings-row">
+        <div class="savings-city-info">
+          <div class="savings-city-name" style="color:var(--c-nishiwaki)">西脇市</div>
+          <div class="savings-monthly">月 <span id="sim-monthly-nishiwaki">—</span>万円<br><span style="font-size:0.65rem;opacity:0.75">家賃 <span id="sim-rent-nishiwaki">2.4</span>万</span></div>
+        </div>
+        <div class="savings-bar-wrap">
+          <div class="savings-bar-track">
+            <div class="savings-bar-fill" id="sim-bar-nishiwaki" style="background:var(--c-nishiwaki)"></div>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <span class="savings-amount" style="color:var(--c-nishiwaki)" id="sim-total-nishiwaki">0</span>
+            <span class="savings-5y-label">万円（5年後）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="savings-diff-callout" id="sim-diff-callout"></div>
+
+    <p style="font-size:0.72rem;color:var(--c-text-muted);margin-top:12px;line-height:1.6;">
+      ※ 生活費（食費・光熱費・交通費等）は都市別の物価水準に基づく固定値を使用。大阪市基準の家賃に対し、河内長野市は約0.71倍・西脇市は約0.48倍の家賃水準です。
+    </p>
+  </div>
+
+  <!-- 次章テキスト -->
+  <div class="next-teaser">
+    <div class="nt-label">▶ 最終章へ</div>
+    <strong>これまで学んだデータを踏まえて、あなた自身の答えを出す時間です。</strong><br>
+    4つの章で「お金」「支援制度」「生活の質」「将来の貯金」を比較しました。次の章では、あなた自身の価値観に基づいた最終意思決定を行います。
+  </div>
+
+  <button id="btn_to_ch5" class="btn-primary">
+    第5章：学習後の意思決定をする →
+  </button>
+
+</div><!-- /container -->
+
+<script>
+const stored = localStorage.getItem('residence_study_log');
+if (!stored) { window.location.href = 'index.html'; }
+
+const btn5 = document.getElementById('btn_to_ch5');
+btn5.addEventListener('click', () => { window.location.href = 'ch5.html'; });
+
+// ── パーソナライズ：選択軸のハイライト
+(function() {
+  const log = JSON.parse(stored || '{}');
+  const valued = (log.mid_session_data || {}).valued_item || '';
+  const axisMap = {
+    money:   { row: 'row-money',   label: 'お金・生活コスト', hint: '「生活コスト」行をハイライトしています。5年後の貯金シミュレーションとあわせて確認してください。' },
+    rent:    { row: 'row-money',   label: '家賃・生活費',     hint: '「生活コスト」行をハイライトしています。毎月の差額が積み重なるとどうなるか、下のシミュレーションで確認できます。' },
+    access:  { row: 'row-access',  label: '交通・アクセス',   hint: '「交通利便性」行をハイライトしています。利便性と貯金額のトレードオフを意識しながら読んでみてください。' },
+    nature:  { row: 'row-nature',  label: '自然環境',         hint: '「自然・住環境」行をハイライトしています。西脇市の★5の環境で月5万円を貯める生活を想像してみてください。' },
+    private: { row: 'row-private', label: 'プライバシー・ゆとり', hint: '「地域コミュニティ」行をハイライトしました。ゆとりのある生活が、長期的な貯金にも影響します。' }
+  };
+  const info = axisMap[valued];
+  if (!info) return;
+
+  const row = document.getElementById(info.row);
+  if (row) row.classList.add('axis-highlight');
+
+  const banner = document.getElementById('personal-banner');
+  const bannerText = document.getElementById('personal-banner-text');
+  banner.style.display = 'flex';
+  bannerText.innerHTML = `前の章で <strong>「${info.label}」</strong> を重視すると選びましたね。${info.hint}`;
+})();
+
+// ── レーダーチャート
+(function() {
+  const AXES  = ['交通\n利便性','自然・\n住環境','経済的\nゆとり','雇用\n機会','子育て\n環境','テレワーク\n適性'];
+  const CITIES = [
+    { color:'var(--c-osaka)',      vals:[5,2,2,5,2,3] },
+    { color:'var(--c-kawachi)',    vals:[3,4,4,3,5,4] },
+    { color:'var(--c-nishiwaki)', vals:[2,5,5,3,4,5] }
+  ];
+  const N=AXES.length, cx=160, cy=160, maxR=105, levels=5;
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.getElementById('radar-ch4');
+  if(!svg) return;
+  function ang(i){ return (Math.PI*2*i/N)-Math.PI/2; }
+  function pt(r,i){ return {x:cx+r*Math.cos(ang(i)), y:cy+r*Math.sin(ang(i))}; }
+  function path(pts){ return pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'Z'; }
+  function el(tag,attrs){
+    const e=document.createElementNS(ns,tag);
+    Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+    return e;
+  }
+  for(let l=1;l<=levels;l++){
+    const r=(maxR/levels)*l;
+    svg.appendChild(el('path',{d:path(Array.from({length:N},(_,i)=>pt(r,i))),fill:'none',stroke:'rgba(255,255,255,0.07)','stroke-width':'1'}));
+  }
+  for(let i=0;i<N;i++){
+    const p=pt(maxR,i);
+    svg.appendChild(el('line',{x1:cx,y1:cy,x2:p.x,y2:p.y,stroke:'rgba(255,255,255,0.1)','stroke-width':'1'}));
+  }
+  CITIES.forEach(c=>{
+    const pts=c.vals.map((v,i)=>pt((v/5)*maxR,i));
+    svg.appendChild(el('path',{d:path(pts),style:`fill:${c.color};fill-opacity:0.13;stroke:${c.color};stroke-width:2;stroke-opacity:0.85`}));
+    pts.forEach(p=>svg.appendChild(el('circle',{cx:p.x,cy:p.y,r:'3',style:`fill:${c.color}`})));
+  });
+  AXES.forEach((label,i)=>{
+    const p=pt(maxR+22,i);
+    const lines=label.split('\n');
+    const t=el('text',{x:p.x,y:p.y-(lines.length-1)*6,'text-anchor':'middle','dominant-baseline':'middle','font-size':'9.5','fill':'rgba(255,255,255,0.55)','font-family':'Noto Sans JP,sans-serif'});
+    lines.forEach((ln,li)=>{ const s=el('tspan',{x:p.x,dy:li===0?'0':'13'}); s.textContent=ln; t.appendChild(s); });
+    svg.appendChild(t);
+  });
+})();
+
+// ── インタラクティブ貯金シミュレーター
+(function() {
+  const CITIES = {
+    osaka:    { rentF: 1.00, living: 15.1 },
+    kawachi:  { rentF: 0.71, living: 14.1 },
+    nishiwaki:{ rentF: 0.48, living: 11.3 }
+  };
+  const incSlider  = document.getElementById('income-slider');
+  const rentSlider = document.getElementById('rent-slider');
+  const incVal  = document.getElementById('sim-income-val');
+  const rentVal = document.getElementById('sim-rent-val');
+
+  function updateTrack(slider) {
+    const pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.background =
+      `linear-gradient(to right,var(--c-accent) ${pct}%,var(--c-border) ${pct}%)`;
+  }
+
+  function update() {
+    const income   = parseFloat(incSlider.value);
+    const baseRent = parseFloat(rentSlider.value);
+    incVal.textContent  = income;
+    rentVal.textContent = baseRent;
+    updateTrack(incSlider);
+    updateTrack(rentSlider);
+
+    const vals = {};
+    for (const [k, c] of Object.entries(CITIES)) {
+      const rent    = parseFloat((baseRent * c.rentF).toFixed(1));
+      const monthly = parseFloat(Math.max(0, income - rent - c.living).toFixed(1));
+      vals[k] = { rent, monthly, total: Math.round(monthly * 60) };
+    }
+
+    const maxTotal = Math.max(...Object.values(vals).map(v => v.total), 1);
+    for (const [k, v] of Object.entries(vals)) {
+      const bar = document.getElementById('sim-bar-' + k);
+      if (bar) bar.style.width = (v.total / maxTotal * 100) + '%';
+      const mEl = document.getElementById('sim-monthly-' + k);
+      if (mEl) mEl.textContent = v.monthly > 0 ? v.monthly.toFixed(1) : '0';
+      const tEl = document.getElementById('sim-total-' + k);
+      if (tEl) tEl.textContent = v.total;
+      const rEl = document.getElementById('sim-rent-' + k);
+      if (rEl) rEl.textContent = v.rent.toFixed(1);
+    }
+
+    const diff = vals.nishiwaki.total - vals.osaka.total;
+    const callout = document.getElementById('sim-diff-callout');
+    if (!callout) return;
+    if (diff > 0) {
+      callout.innerHTML = `<strong style="color:#059669">差額は5年で${diff}万円</strong><br>
+        西脇市（${vals.nishiwaki.total}万円）と大阪市（${vals.osaka.total}万円）の差は
+        <strong>5年で${diff}万円</strong>。住宅頭金・留学・起業資金にもなる金額です。「どこに住むか」は「どう生きるか」の選択です。`;
+    } else {
+      callout.innerHTML = `<strong style="color:var(--c-accent)">高い月収なら大阪市でも十分貯金できます</strong><br>
+        月収が高い場合、都市の生活コストを上回る貯蓄が可能です。ただし各都市の差額はどんな月収でも変わりません。`;
+    }
+  }
+
+  incSlider.addEventListener('input', update);
+  rentSlider.addEventListener('input', update);
+  update();
+})();
+
+// ── 読了プログレスバー
+(function() {
+  const rpbEl  = document.getElementById('rpb');
+  const fillEl = document.getElementById('rpb-fill');
+  const textEl = document.getElementById('rpb-text');
+  const UNLOCK = 80;
+  let unlocked = false;
+
+  function update() {
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = maxScroll > 0 ? Math.min(100, (window.scrollY / maxScroll) * 100) : 100;
+    fillEl.style.width = pct + '%';
+    if (pct > 5) rpbEl.classList.add('visible');
+    if (!unlocked) {
+      if (pct >= UNLOCK) {
+        unlocked = true;
+        fillEl.classList.add('done');
+        textEl.classList.add('done');
+        textEl.textContent = '読了完了';
+      } else {
+        textEl.textContent = `読了まであと約${Math.ceil(UNLOCK - pct)}%`;
+      }
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+
+<div class="rpb" id="rpb" role="status" aria-live="polite">
+  <div class="rpb-track"><div class="rpb-fill" id="rpb-fill"></div></div>
+  <span class="rpb-text" id="rpb-text">読了まであと約80%</span>
+</div>
+</body>
+</html>

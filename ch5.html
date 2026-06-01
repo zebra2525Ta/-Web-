@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第5章：再意思決定 | 居住地選択シミュレーション</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.q-block {
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--c-border);
+}
+.q-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.q-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin-bottom: 8px;
+}
+.q-text {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.profile-card h4 { font-size: 0.9rem; margin-bottom: 6px; }
+
+.action-highlight {
+  background: rgba(91,140,255,0.07);
+  border: 1px solid rgba(91,140,255,0.2);
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  margin: 10px 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.action-highlight strong { color: var(--c-accent); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+
+<div class="chapter-header">
+  <div class="chapter-tag">Chapter 5</div>
+  <h1 class="chapter-title">これからの<span>あなたの暮らし</span></h1>
+  <p class="chapter-desc">学習を経て、もう一度考えてみましょう。</p>
+</div>
+
+<div class="container">
+
+  <!-- 事後意識調査フォーム -->
+  <div class="card" id="after_form_section">
+    <div class="card-label">事後意識調査 — 学習後の考えを記録します</div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">Q1</div>
+      <div class="q-text">3都市を学んだ今、将来住みたい場所はどこですか？</div>
+      <div class="radio-group" id="q1-group">
+        <label class="radio-option" data-val="urban">
+          <input type="radio" name="final_loc" value="urban">
+          <div class="radio-dot"></div>
+          <span>都市部（大阪市のような大都市）</span>
+        </label>
+        <label class="radio-option" data-val="sub_urban">
+          <input type="radio" name="final_loc" value="sub_urban">
+          <div class="radio-dot"></div>
+          <span>準都市（河内長野市のようなバランス型）</span>
+        </label>
+        <label class="radio-option" data-val="rural">
+          <input type="radio" name="final_loc" value="rural">
+          <div class="radio-dot"></div>
+          <span>地方（西脇市のような自然環境重視）</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">Q2</div>
+      <div class="q-text">その理由を自由に書いてください。</div>
+      <textarea id="reason_after" class="textarea-field" placeholder="学習を通じて考えたことを書いてください。（10文字以上）" minlength="10"></textarea>
+      <p id="reason_warn" style="font-size:0.8rem;color:var(--c-accent2);margin-top:6px;display:none;">10文字以上入力してください（研究データの質を担保するためです）</p>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">Q3</div>
+      <div class="q-text">学習前と比べて、考えはどのくらい変わりましたか？</div>
+      <div class="scale-group" id="change-scale-group">
+        <button class="scale-btn" data-val="1">1<br><span style="font-size:0.65rem;font-weight:400">全く変わらない</span></button>
+        <button class="scale-btn" data-val="2">2</button>
+        <button class="scale-btn" data-val="3">3<br><span style="font-size:0.65rem;font-weight:400">少し変わった</span></button>
+        <button class="scale-btn" data-val="4">4</button>
+        <button class="scale-btn" data-val="5">5<br><span style="font-size:0.65rem;font-weight:400">大きく変わった</span></button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block">
+      <div class="q-label">Q4</div>
+      <div class="q-text">今回の学習で最も影響を与えたのは何ですか？</div>
+      <div class="radio-group" id="q4-group">
+        <label class="radio-option" data-val="money">
+          <input type="radio" name="influence_factor" value="money">
+          <div class="radio-dot"></div>
+          <span>可処分所得・お金のデータ</span>
+        </label>
+        <label class="radio-option" data-val="access">
+          <input type="radio" name="influence_factor" value="access">
+          <div class="radio-dot"></div>
+          <span>交通・アクセス情報</span>
+        </label>
+        <label class="radio-option" data-val="service">
+          <input type="radio" name="influence_factor" value="service">
+          <div class="radio-dot"></div>
+          <span>行政サービス・支援制度</span>
+        </label>
+        <label class="radio-option" data-val="lifestyle">
+          <input type="radio" name="influence_factor" value="lifestyle">
+          <div class="radio-dot"></div>
+          <span>生活シナリオ・リアルなイメージ</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 都市別プロフィール（Q1〜Q4入力後に表示） -->
+  <div class="reveal-section" id="profile_section" aria-live="polite">
+    <div class="card">
+      <div class="card-label">あなたにぴったりなのは？</div>
+      <h3>都市別プロフィール</h3>
+      <div class="profile-cards">
+        <div class="profile-card osaka">
+          <h4 class="pc-osaka">大阪市タイプ</h4>
+          <p style="font-size:0.83rem;color:var(--c-text-muted);line-height:1.6">
+            キャリアや人とのつながりを最優先したい人向け。刺激・多様性・チャンスが豊富。
+            都市の「密度」をエネルギーに変えられる人に最適。
+          </p>
+        </div>
+        <div class="profile-card kawachi">
+          <h4 class="pc-kawachi">河内長野市タイプ</h4>
+          <p style="font-size:0.83rem;color:var(--c-text-muted);line-height:1.6">
+            利便性と自然のバランスを求める人向け。最高の行政サービスと年収の高さが魅力。
+            「都市に近い地方」という選択肢。
+          </p>
+        </div>
+        <div class="profile-card nishiwaki">
+          <h4 class="pc-nishiwaki">西脇市タイプ</h4>
+          <p style="font-size:0.83rem;color:var(--c-text-muted);line-height:1.6">
+            自由な時間・生活コスト削減・自然を求める人向け。テレワーカーや起業家にも。
+            移住支援制度を活かせば初年度の負担が大幅に軽減。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 活動提案（同じく表示） -->
+  <div class="reveal-section" id="action_section">
+    <div class="card">
+      <div class="card-label">Q5 — 学習の転移</div>
+      <h3>今後、実際に行動したいと思いますか？</h3>
+      <p style="font-size:0.85rem;color:var(--c-text-muted);margin-bottom:16px;">
+        例：移住イベントに参加する・地域を実際に訪問する・情報収集を深める、など
+      </p>
+
+      <div id="action-proposals" style="margin-bottom:18px;"></div>
+
+      <div class="radio-group" id="q5-group">
+        <label class="radio-option" data-val="strong">
+          <input type="radio" name="future_action" value="strong">
+          <div class="radio-dot"></div>
+          <span>ぜひ行動したい</span>
+        </label>
+        <label class="radio-option" data-val="yes">
+          <input type="radio" name="future_action" value="yes">
+          <div class="radio-dot"></div>
+          <span>少し考えてみようと思う</span>
+        </label>
+        <label class="radio-option" data-val="no">
+          <input type="radio" name="future_action" value="no">
+          <div class="radio-dot"></div>
+          <span>今は行動するつもりはない</span>
+        </label>
+      </div>
+
+      <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:12px;">Q5を選択すると送信ボタンが有効になります</p>
+      <button id="btn_submit" class="btn-primary" disabled>
+        学習データを記録して完了する →
+      </button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+const stored = localStorage.getItem('residence_study_log');
+if (!stored) { window.location.href = 'index.html'; }
+
+let afterData = { final_loc: null, reason_after: null, change_scale: null, influence_factor: null };
+
+function checkAfterComplete() {
+  const allFilled = afterData.final_loc && afterData.reason_after && afterData.change_scale && afterData.influence_factor;
+  if (allFilled && !document.getElementById('profile_section').style.display.includes('block')) {
+    showProfiles();
+  }
+}
+
+function showProfiles() {
+  document.getElementById('profile_section').style.display = 'block';
+  document.getElementById('action_section').style.display = 'block';
+
+  // 選択に応じた行動提案
+  const proposals = {
+    urban: '大阪市を選んだあなたへ：<strong>都市型インターンシップや就活イベント</strong>に1件応募してみましょう。',
+    sub_urban: '河内長野市を選んだあなたへ：<strong>1日足を伸ばして実際に街を歩いてみましょう。</strong> 南海電車で難波から約40分です。',
+    rural: '西脇市を選んだあなたへ：<strong>移住体験プログラムや地域おこし協力隊の情報を調べてみましょう。</strong>'
+  };
+  const p = proposals[afterData.final_loc] || '';
+  if (p) {
+    document.getElementById('action-proposals').innerHTML = `<div class="action-highlight">${p}</div>`;
+  }
+
+  setTimeout(() => {
+    document.getElementById('profile_section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ── Q1
+document.querySelectorAll('#q1-group .radio-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('#q1-group .radio-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    opt.querySelector('input').checked = true;
+    afterData.final_loc = opt.dataset.val;
+    checkAfterComplete();
+  });
+});
+
+// ── Q2
+document.getElementById('reason_after').addEventListener('input', e => {
+  const val = e.target.value.trim();
+  const warn = document.getElementById('reason_warn');
+  if (val.length > 0 && val.length < 10) {
+    warn.style.display = 'block';
+    afterData.reason_after = null;
+  } else {
+    warn.style.display = 'none';
+    afterData.reason_after = val.length >= 10 ? val : null;
+  }
+  checkAfterComplete();
+});
+
+// ── Q3 scale buttons
+document.querySelectorAll('#change-scale-group .scale-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#change-scale-group .scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    afterData.change_scale = btn.dataset.val;
+    checkAfterComplete();
+  });
+});
+
+// ── Q4
+document.querySelectorAll('#q4-group .radio-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('#q4-group .radio-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    opt.querySelector('input').checked = true;
+    afterData.influence_factor = opt.dataset.val;
+    checkAfterComplete();
+  });
+});
+
+// ── Q5
+document.querySelectorAll('#q5-group .radio-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('#q5-group .radio-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    opt.querySelector('input').checked = true;
+    afterData.future_action = opt.dataset.val;
+    document.getElementById('btn_submit').disabled = false;
+  });
+});
+
+// ── Submit
+document.getElementById('btn_submit').addEventListener('click', () => {
+  const log = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
+  log.user_after_data = {
+    final_loc: afterData.final_loc,
+    reason_after: afterData.reason_after,
+    change_scale: afterData.change_scale,
+    influence_factor: afterData.influence_factor,
+    future_action: afterData.future_action,
+    timestamp_after: new Date().toISOString()
+  };
+  localStorage.setItem('residence_study_log', JSON.stringify(log));
+  window.location.href = 'complete.html';
+});
+</script>
+</body>
+</html>
