@@ -1,5 +1,40 @@
-「中間調査」に代わるタイトル案
-案1：直感とワクワク感をそそるスタイル（おすすめ！）
-STEP 0：あなたの「直感」チェック
-FIRST CHECK：今のあなたの本音は？
-狙い： 「調査」という言葉を隠し、ゲームのチュートリアルや小テスト感覚でカジュアルに答えさせます。被験者の学生が身構えずにピュアな回答をしてくれやすくなります。
+これで、ブラウザからこのURLにデータを送信すれば、自動的にスプレッドシートの行が追加される「専用のパイプライン」が完成しました。
+
+あとは、complete.html のJavaScript側で、このURLに向けてデータを送る処理を書くだけです。以下の手順でコードを組み込んでください。
+
+💻 JavaScript（complete.html）への組み込みコード
+現在のコードの、ボタンクリックなどのタイミングで以下の関数を呼び出せばOKです。
+
+JavaScript
+const GAS_URL = "https://script.google.com/macros/s/AKfycby4X_VFB5yejOIey_zWXxln_1fnjgvJJvr-ds1atdTqNnRP8OcyXqIX_FyhVUycZPzXpQ/exec";
+
+function sendDataToSheet() {
+  // 1. 各データの取得（ここは今使っている変数やDOMのIDに合わせてください）
+  const payload = {
+    before_choice: "地方（西脇市）", // ※例：localStorage等から取得
+    after_choice: "地方（西脇市）",
+    choice_status: "変化なし",
+    change_score: 3,
+    before_reason: "ここにBEFORE理由",
+    after_reason: "ここにAFTER理由",
+    axis_before: "家賃の安さ",
+    axis_after: "自然環境",
+    most_influential: "行政サービス・支援制度",
+    take_home_money: 20, 
+    desired_rent: 5
+  };
+
+  // 2. GASへ送信
+  fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors", // 重要：GASとの通信エラーを防ぐため
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => alert("データが研究用シートに保存されました！"))
+  .catch(err => console.error("エラー:", err));
+}
+💡 仕上げのチェックリスト
+コードの紐付け： complete.html の「データを送信するボタン」の onclick 属性に sendDataToSheet() を指定しましたか？
+
+動作確認： 実際にブラウザで画面を開いてボタンを押し、スプレッドシートのA列からL列にデータが入るか確認してみましょう。

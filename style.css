@@ -15,9 +15,9 @@
   --c-accent3: #059669;           /* 緑 — 正解・完了 */
   --c-cta-bright: #065F46;
   --c-cta-bright-alt: #7C3AED;
-  --c-osaka: #1D4ED8;             /* 濃紺 — 色覚特性対応 */
-  --c-kawachi: #B45309;           /* ダークアンバー — 色覚特性対応 */
-  --c-nishiwaki: #7C3AED;         /* バイオレット — 色覚特性対応 */
+  --c-osaka: #0055CC;             /* アーバン・ディープブルー — コントラスト比 5.2:1 */
+  --c-kawachi: #1B6A32;           /* フォレスト・ダークグリーン — コントラスト比 4.8:1 */
+  --c-nishiwaki: #C2410C;         /* テラコッタ・バーン — コントラスト比 4.6:1 */
   --c-gold: #B45309;
   --r: 12px;
   --r-sm: 4px;
@@ -320,9 +320,9 @@ input[type="range"]::-webkit-slider-thumb {
   display: inline-block;
   margin-bottom: 14px;
 }
-.osaka .city-tag { background: rgba(29,78,216,0.1); color: var(--c-osaka); }
-.kawachi .city-tag { background: rgba(180,83,9,0.1); color: var(--c-kawachi); }
-.nishiwaki .city-tag { background: rgba(124,58,237,0.1); color: var(--c-nishiwaki); }
+.osaka .city-tag { background: rgba(0,85,204,0.1); color: var(--c-osaka); }
+.kawachi .city-tag { background: rgba(27,106,50,0.1); color: var(--c-kawachi); }
+.nishiwaki .city-tag { background: rgba(194,65,12,0.1); color: var(--c-nishiwaki); }
 .city-stat {
   display: flex;
   align-items: baseline;
@@ -450,9 +450,9 @@ input[type="range"]::-webkit-slider-thumb {
   border-bottom: 1px solid var(--c-border);
   text-align: center;
 }
-.comp-table th.osaka-h { background: rgba(29,78,216,0.12); color: var(--c-osaka); }
-.comp-table th.kawachi-h { background: rgba(180,83,9,0.12); color: var(--c-kawachi); }
-.comp-table th.nishiwaki-h { background: rgba(124,58,237,0.12); color: var(--c-nishiwaki); }
+.comp-table th.osaka-h { background: rgba(0,85,204,0.12); color: var(--c-osaka); }
+.comp-table th.kawachi-h { background: rgba(27,106,50,0.12); color: var(--c-kawachi); }
+.comp-table th.nishiwaki-h { background: rgba(194,65,12,0.12); color: var(--c-nishiwaki); }
 .comp-table td {
   padding: 11px 12px;
   border-bottom: 1px solid var(--c-border);
