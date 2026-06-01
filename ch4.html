@@ -203,12 +203,12 @@ body { padding-bottom: 56px; }
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 4</div>
-  <h1 class="chapter-title">ライフスタイルと<span>支援制度の比較</span></h1>
-  <p class="chapter-desc">生活のリアルな解像度を上げましょう。表面的なイメージを削ぎ落とします。</p>
+  <h1 class="chapter-title">5年後の<span>貯金シミュレーション</span></h1>
+  <p class="chapter-desc">ここまで学んだデータをもとに、あなた自身の数字で将来を計算しましょう。</p>
 </div>
 
 <div class="container">
@@ -218,179 +218,6 @@ body { padding-bottom: 56px; }
     <span class="pb-icon">→</span>
     <span id="personal-banner-text"></span>
   </div>
-
-  <!-- 行政サービス比較 -->
-  <div class="card">
-    <div class="card-label">行政サービス・支援制度の比較</div>
-    <h3 class="section-h">主な生活支援制度</h3>
-    <div class="support-grid">
-      <div class="support-card osaka">
-        <h4>大阪市</h4>
-        <ul>
-          <li>保育所・認定こども園が多数</li>
-          <li>生活保護・就労支援が充実</li>
-          <li>医療機関へのアクセスが極めて良好</li>
-          <li>多言語対応サービスあり</li>
-          <li>ただし待機児童が発生しやすい</li>
-        </ul>
-      </div>
-      <div class="support-card kawachi">
-        <h4>河内長野市</h4>
-        <ul>
-          <li>行政サービス改革度 <strong>全国1位</strong></li>
-          <li>子育て世帯への給付金あり</li>
-          <li>空き家バンク制度を運用中</li>
-          <li>コンパクトな市役所でワンストップ対応</li>
-          <li>待機児童はほぼゼロ</li>
-        </ul>
-      </div>
-      <div class="support-card nishiwaki">
-        <h4>西脇市</h4>
-        <ul>
-          <li>移住支援金（最大100万円）</li>
-          <li>若者定住促進住宅補助</li>
-          <li>テレワーク移住者への支援あり</li>
-          <li>子育てサポート拠点を整備中</li>
-          <li>住宅取得補助が手厚い</li>
-        </ul>
-      </div>
-    </div>
-    <div class="callout" style="margin-top:16px;">
-      <strong style="color:var(--c-accent3);">「安心度」の見方を変えてみましょう</strong><br>
-      病院の「数」は大阪市が最多です。しかし混雑・待機児童（大阪市では発生）を考慮すると、<strong>行政の手厚さは中都市が勝る面もあります。</strong>河内長野市の「行政サービス改革度全国1位」は、サポートの質を表す指標です。
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <!-- 生活比較表 -->
-  <div class="card">
-    <div class="card-label">生活環境の比較表</div>
-    <h3 class="section-h">暮らしやすさを多角的に比べる</h3>
-    <div style="overflow-x:auto;">
-      <table class="comp-table">
-        <thead>
-          <tr>
-            <th scope="col" style="text-align:left;color:var(--c-text-muted);background:transparent;">項目</th>
-            <th scope="col" class="osaka-h">大阪市</th>
-            <th scope="col" class="kawachi-h">河内長野市</th>
-            <th scope="col" class="nishiwaki-h">西脇市</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr id="row-access">
-            <th scope="row" style="text-align:left;font-weight:400">交通利便性</th>
-            <td><span class="star">★★★★★</span></td>
-            <td><span class="star">★★★</span>☆☆</td>
-            <td><span class="star">★★</span>☆☆☆</td>
-          </tr>
-          <tr id="row-nature">
-            <th scope="row" style="text-align:left;font-weight:400">自然・住環境</th>
-            <td><span class="star">★★</span>☆☆☆</td>
-            <td><span class="star">★★★★</span>☆</td>
-            <td><span class="star">★★★★★</span></td>
-          </tr>
-          <tr id="row-money">
-            <th scope="row" style="text-align:left;font-weight:400">生活コスト</th>
-            <td>高い</td>
-            <td>中程度</td>
-            <td>低い</td>
-          </tr>
-          <tr>
-            <th scope="row" style="text-align:left;font-weight:400">雇用・就職機会</th>
-            <td><span class="star">★★★★★</span></td>
-            <td><span class="star">★★★</span>☆☆</td>
-            <td><span class="star">★★★</span>☆☆</td>
-          </tr>
-          <tr>
-            <th scope="row" style="text-align:left;font-weight:400">子育て環境</th>
-            <td>施設多・混雑あり</td>
-            <td>充実・余裕あり</td>
-            <td>手厚い補助・施設は少なめ</td>
-          </tr>
-          <tr>
-            <th scope="row" style="text-align:left;font-weight:400">医療アクセス</th>
-            <td><span class="star">★★★★★</span></td>
-            <td><span class="star">★★★</span>☆☆</td>
-            <td><span class="star">★★</span>☆☆☆</td>
-          </tr>
-          <tr id="row-private">
-            <th scope="row" style="text-align:left;font-weight:400">地域コミュニティ</th>
-            <td>希薄な傾向</td>
-            <td>バランス型</td>
-            <td>密接・つながりが強い</td>
-          </tr>
-          <tr>
-            <th scope="row" style="text-align:left;font-weight:400">テレワーク適性</th>
-            <td>環境が整う</td>
-            <td>高い</td>
-            <td>非常に高い</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="callout" style="margin-top:16px;">
-      <strong style="color:var(--c-accent3);">「お金」の罠：年収より可処分所得</strong><br>
-      都会は年収が高いですが、それ以上に家賃と生活コストが高いため、<strong>実は手元にお金が残りません。</strong>西脇市では年間313万円が自由になるお金。大阪市（211万円）との差は年間約102万円です。
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <!-- レーダーチャート -->
-  <div class="card">
-    <div class="card-label">総合評価レーダー</div>
-    <h3 class="section-h">6軸で3都市を比べる</h3>
-    <p style="font-size:0.8rem;color:var(--c-text-muted);margin-bottom:12px;">交通・住環境・経済・雇用・子育て・テレワークの6軸で評価。面積が大きいほど総合的に優れています。</p>
-    <div style="display:flex;justify-content:center;">
-      <svg id="radar-ch4" viewBox="0 0 320 320" width="100%" style="max-width:380px;display:block" role="img" aria-label="3都市の6軸レーダーチャート。大阪市（青）は交通・雇用で高評価。河内長野市（橙）は子育て環境で最高。西脇市（紫）は自然・経済・テレワーク適性で最高評価。"></svg>
-    </div>
-    <div style="display:flex;justify-content:center;gap:20px;font-size:0.8rem;margin-top:10px;flex-wrap:wrap;">
-      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-osaka);display:inline-block;border-radius:2px"></span>大阪市</span>
-      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-kawachi);display:inline-block;border-radius:2px"></span>河内長野市</span>
-      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--c-nishiwaki);display:inline-block;border-radius:2px"></span>西脇市</span>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <!-- 生活シナリオ -->
-  <div class="card">
-    <div class="card-label">時間軸シミュレーション</div>
-    <h3 class="section-h">社会人1年目・一人暮らし — 各都市で暮らすと</h3>
-    <div class="scenario-cards">
-      <div class="scenario-card osaka">
-        <div class="sc-city">大阪市</div>
-        <p>
-          年収442万円。家賃・食費・交通費を払うと手元に残るのは約<strong>211万円</strong>。<br>
-          職場まで電車5分、コンビニは徒歩1分。仕事帰りに飲み会・イベント。<br>
-          貯金は月<strong>約1.5万円</strong>ペース。忙しいが選択肢は多い。
-        </p>
-      </div>
-      <div class="scenario-card kawachi">
-        <div class="sc-city">河内長野市</div>
-        <p>
-          年収486万円。生活費が抑えられ手元に<strong>281万円</strong>。<br>
-          大阪市内まで電車30分、静かな環境で帰宅後に趣味の時間。<br>
-          月<strong>約3.5万円</strong>の貯蓄が可能。週末ハイキングや外食を楽しめる。
-        </p>
-      </div>
-      <div class="scenario-card nishiwaki">
-        <div class="sc-city">西脇市</div>
-        <p>
-          年収473万円。家賃2万・食費も安く手元に<strong>313万円</strong>。<br>
-          車通勤、自然の中の広い部屋。移住支援金で初年度に最大100万円加算。<br>
-          月<strong>約5万円</strong>の貯蓄が可能。テレワーク勤務なら都市並みの仕事も。
-        </p>
-      </div>
-    </div>
-
-    <div class="callout">
-      どのシナリオが「良い」かは、<strong>あなたの価値観次第</strong>です。キャリアを積みたい・人とのつながりを大事にしたい・自然の中でゆっくり生きたい——それぞれに合った選択があります。
-    </div>
-  </div>
-
-  <hr class="section-divider">
 
   <!-- 5年後の貯金シミュレーション（インタラクティブ） -->
   <div class="card">
@@ -496,69 +323,23 @@ if (!stored) { window.location.href = 'index.html'; }
 const btn5 = document.getElementById('btn_to_ch5');
 btn5.addEventListener('click', () => { window.location.href = 'ch5.html'; });
 
-// ── パーソナライズ：選択軸のハイライト
+// ── パーソナライズバナー
 (function() {
   const log = JSON.parse(stored || '{}');
   const valued = (log.mid_session_data || {}).valued_item || '';
-  const axisMap = {
-    money:   { row: 'row-money',   label: 'お金・生活コスト', hint: '「生活コスト」行をハイライトしています。5年後の貯金シミュレーションとあわせて確認してください。' },
-    rent:    { row: 'row-money',   label: '家賃・生活費',     hint: '「生活コスト」行をハイライトしています。毎月の差額が積み重なるとどうなるか、下のシミュレーションで確認できます。' },
-    access:  { row: 'row-access',  label: '交通・アクセス',   hint: '「交通利便性」行をハイライトしています。利便性と貯金額のトレードオフを意識しながら読んでみてください。' },
-    nature:  { row: 'row-nature',  label: '自然環境',         hint: '「自然・住環境」行をハイライトしています。西脇市の★5の環境で月5万円を貯める生活を想像してみてください。' },
-    private: { row: 'row-private', label: 'プライバシー・ゆとり', hint: '「地域コミュニティ」行をハイライトしました。ゆとりのある生活が、長期的な貯金にも影響します。' }
+  const hintMap = {
+    money:   { label: 'お金・生活コスト', hint: 'スライダーを動かして、あなたの月収でどれだけ差が出るか確認してみましょう。' },
+    rent:    { label: '家賃・生活費',     hint: '家賃スライダーを調整すると、家賃の差が5年でどれだけ積み重なるか分かります。' },
+    access:  { label: '交通・アクセス',   hint: '利便性と貯金額のトレードオフを、下のシミュレーターで数字として確認してみましょう。' },
+    nature:  { label: '自然環境',         hint: '西脇市で月5万円を貯めながら自然の中で暮らす生活を、数字で確かめてみましょう。' },
+    private: { label: 'プライバシー・ゆとり', hint: 'ゆとりのある生活が長期的な貯金にどう影響するか、シミュレーターで確認できます。' }
   };
-  const info = axisMap[valued];
+  const info = hintMap[valued];
   if (!info) return;
-
-  const row = document.getElementById(info.row);
-  if (row) row.classList.add('axis-highlight');
-
   const banner = document.getElementById('personal-banner');
   const bannerText = document.getElementById('personal-banner-text');
   banner.style.display = 'flex';
   bannerText.innerHTML = `前の章で <strong>「${info.label}」</strong> を重視すると選びましたね。${info.hint}`;
-})();
-
-// ── レーダーチャート
-(function() {
-  const AXES  = ['交通\n利便性','自然・\n住環境','経済的\nゆとり','雇用\n機会','子育て\n環境','テレワーク\n適性'];
-  const CITIES = [
-    { color:'var(--c-osaka)',      vals:[5,2,2,5,2,3] },
-    { color:'var(--c-kawachi)',    vals:[3,4,4,3,5,4] },
-    { color:'var(--c-nishiwaki)', vals:[2,5,5,3,4,5] }
-  ];
-  const N=AXES.length, cx=160, cy=160, maxR=105, levels=5;
-  const ns='http://www.w3.org/2000/svg';
-  const svg=document.getElementById('radar-ch4');
-  if(!svg) return;
-  function ang(i){ return (Math.PI*2*i/N)-Math.PI/2; }
-  function pt(r,i){ return {x:cx+r*Math.cos(ang(i)), y:cy+r*Math.sin(ang(i))}; }
-  function path(pts){ return pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'Z'; }
-  function el(tag,attrs){
-    const e=document.createElementNS(ns,tag);
-    Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
-    return e;
-  }
-  for(let l=1;l<=levels;l++){
-    const r=(maxR/levels)*l;
-    svg.appendChild(el('path',{d:path(Array.from({length:N},(_,i)=>pt(r,i))),fill:'none',stroke:'rgba(255,255,255,0.07)','stroke-width':'1'}));
-  }
-  for(let i=0;i<N;i++){
-    const p=pt(maxR,i);
-    svg.appendChild(el('line',{x1:cx,y1:cy,x2:p.x,y2:p.y,stroke:'rgba(255,255,255,0.1)','stroke-width':'1'}));
-  }
-  CITIES.forEach(c=>{
-    const pts=c.vals.map((v,i)=>pt((v/5)*maxR,i));
-    svg.appendChild(el('path',{d:path(pts),style:`fill:${c.color};fill-opacity:0.13;stroke:${c.color};stroke-width:2;stroke-opacity:0.85`}));
-    pts.forEach(p=>svg.appendChild(el('circle',{cx:p.x,cy:p.y,r:'3',style:`fill:${c.color}`})));
-  });
-  AXES.forEach((label,i)=>{
-    const p=pt(maxR+22,i);
-    const lines=label.split('\n');
-    const t=el('text',{x:p.x,y:p.y-(lines.length-1)*6,'text-anchor':'middle','dominant-baseline':'middle','font-size':'9.5','fill':'rgba(255,255,255,0.55)','font-family':'Noto Sans JP,sans-serif'});
-    lines.forEach((ln,li)=>{ const s=el('tspan',{x:p.x,dy:li===0?'0':'13'}); s.textContent=ln; t.appendChild(s); });
-    svg.appendChild(t);
-  });
 })();
 
 // ── インタラクティブ貯金シミュレーター

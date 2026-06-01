@@ -85,8 +85,8 @@
     <div class="q-block">
       <div class="q-label">Q2</div>
       <div class="q-text">その理由を自由に書いてください。</div>
-      <textarea id="reason_after" class="textarea-field" placeholder="学習を通じて考えたことを書いてください。（10文字以上）" minlength="10"></textarea>
-      <p id="reason_warn" style="font-size:0.8rem;color:var(--c-accent2);margin-top:6px;display:none;">10文字以上入力してください（研究データの質を担保するためです）</p>
+      <textarea id="reason_after" class="textarea-field" placeholder="学習を通じて考えたことを書いてください。（例：〜だから都市部を選んだ）（20文字以上）" minlength="20"></textarea>
+      <p id="reason_warn" style="font-size:0.8rem;color:var(--c-accent2);margin-top:6px;display:none;">20文字以上入力してください（研究データの質を担保するためです）</p>
     </div>
 
     <!-- Q3 -->
@@ -248,12 +248,12 @@ document.querySelectorAll('#q1-group .radio-option').forEach(opt => {
 document.getElementById('reason_after').addEventListener('input', e => {
   const val = e.target.value.trim();
   const warn = document.getElementById('reason_warn');
-  if (val.length > 0 && val.length < 10) {
+  if (val.length > 0 && val.length < 20) {
     warn.style.display = 'block';
     afterData.reason_after = null;
   } else {
     warn.style.display = 'none';
-    afterData.reason_after = val.length >= 10 ? val : null;
+    afterData.reason_after = val.length >= 20 ? val : null;
   }
   checkAfterComplete();
 });

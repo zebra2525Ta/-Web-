@@ -147,11 +147,11 @@
   <div class="chapter-tag">Chapter 1</div>
   <h1 class="chapter-title">3つの地域を<span>フラットに知る</span></h1>
   <p class="chapter-desc">先入観を交えず、まずは客観的なデータを確認しましょう。</p>
-  <div class="timer-badge">
+  <div class="timer-badge" id="timer-badge">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span>読了まで</span>
+    <span id="timer-label">読了まで</span>
     <span id="timer-count">10</span>
-    <span>秒</span>
+    <span id="timer-unit">秒</span>
   </div>
 </div>
 
@@ -171,7 +171,7 @@
   </div>
 
   <!-- CITY GRID -->
-  <div class="city-grid" id="city-grid-section">
+  <div class="city-grid" id="city-grid-section" style="display:none">
     <!-- 大阪市 -->
     <div class="city-card osaka">
       <h3>大阪市</h3>
@@ -215,10 +215,10 @@
     </div>
   </div>
 
-  <hr class="section-divider">
+  <hr class="section-divider" id="detail-divider" style="display:none">
 
   <!-- 詳細比較 -->
-  <div class="card">
+  <div class="card" id="detail-card" style="display:none">
     <div class="card-label">詳細比較</div>
     <h3>主要指標を並べてみると</h3>
     <table class="data-table">
@@ -291,7 +291,7 @@
   <div class="next-teaser">
     <div class="nt-label">▶ 次の章で明かされること</div>
     <strong>「年収が高い都市 = 手元にお金が残る都市」は本当でしょうか？</strong><br>
-    年収のランキングは分かりました。では<em>実際に使えるお金（可処分所得）</em>では、順位は同じでしょうか？次章で、多くの人が見落としている「逆転」が起きます。
+    年収のランキングは分かりました。では、なぜこれほどの逆転現象が起きるのか？次章でその<em>「生活コストのカラクリ」</em>を深掘りします。
   </div>
 
   <p class="progress-note" id="progress-note">直感クイズに答えると、または10秒後に次へ進めます</p>
@@ -319,6 +319,9 @@ function unlock() {
   const btn = document.getElementById('btn_to_ch2');
   btn.disabled = false;
   document.getElementById('progress-note').textContent = '次に進む準備ができました';
+  document.getElementById('timer-label').textContent = '';
+  document.getElementById('timer-count').textContent = '読了完了';
+  document.getElementById('timer-unit').textContent = '';
 }
 
 // 10秒カウントダウン（フォールバック）
@@ -330,6 +333,9 @@ const interval = setInterval(() => {
   if (count <= 0) {
     clearInterval(interval);
     timerDone = true;
+    document.getElementById('city-grid-section').style.display = '';
+    document.getElementById('detail-divider').style.display = '';
+    document.getElementById('detail-card').style.display = '';
     unlock();
   }
 }, 1000);
@@ -341,6 +347,9 @@ window.addEventListener('scroll', () => {
     scrollDone = true;
     clearInterval(interval);
     document.getElementById('timer-count').textContent = '0';
+    document.getElementById('city-grid-section').style.display = '';
+    document.getElementById('detail-divider').style.display = '';
+    document.getElementById('detail-card').style.display = '';
     unlock();
   }
 });
@@ -379,6 +388,11 @@ document.querySelectorAll('#predict-btns .quiz-btn').forEach(btn => {
         <span style="color:var(--c-text-muted);font-size:0.85rem;">「都会が一番稼げる」は必ずしも正しくありません。次の章でさらに深く掘り下げます。</span>
       </div>`;
     }
+
+    // データセクション表示
+    document.getElementById('city-grid-section').style.display = '';
+    document.getElementById('detail-divider').style.display = '';
+    document.getElementById('detail-card').style.display = '';
 
     // クイズ完了 → ボタン解放
     quizDone = true;
