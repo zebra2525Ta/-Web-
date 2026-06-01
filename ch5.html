@@ -290,20 +290,60 @@ document.querySelectorAll('#q5-group .radio-option').forEach(opt => {
   });
 });
 
-// ── Submit
-document.getElementById('btn_submit').addEventListener('click', () => {
+// ── GAS送信機能
+const GAS_URL = "https://script.google.com/macros/s/AKfycby4X_VFB5yejOIey_zWXxln_1fnjgvJJvr-ds1atdTqNnRP8OcyXqIX_FyhVUycZPzXpQ/exec";
+const locMap = { urban: '都市部（大阪市）', sub_urban: '準都市（河内長野市）', rural: '地方（西脇市）' };
+const valuedItemMap = { money: 'お金・生活費', rent: '家賃の安さ', access: '交通・アクセス', nature: '自然環境', private: 'プライバシー・ゆとり' };
+const factorMap = { money: '可処分所得・お金のデータ', access: '交通・アクセス情報', service: '行政サービス・支援制度', lifestyle: '生活シナリオ・リアルなイメージ' };
+
+function sendDataToSheet() {
   const log = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
-  log.user_after_data = {
-    final_loc: afterData.final_loc,
-    reason_after: afterData.reason_after,
-    change_scale: afterData.change_scale,
-    influence_factor: afterData.influence_factor,
-    future_action: afterData.future_action,
-    timestamp_after: new Date().toISOString()
+  const beforeData = log.user_before_data || {};
+  const midData = log.user_mid_data || {};
+  
+  // ペイロード作成
+  const payload = {
+    before_choice: locMap[beforeData.desired_loc] || '未選択',
+    after_choice: locMap[afterData.final_loc] || '未選択',
+    choice_status: beforeData.desired_loc === afterData.final_loc ? '変化なし' : '変化あり',
+    change_score: parseInt(afterData.change_scale) || 0,
+    before_reason: (midData.reason_mid || beforeData.reason_before) || '—',
+    after_reason: afterData.reason_after || '—',
+    axis_before: valuedItemMap[beforeData.valued_item_before] || valuedItemMap[midData.valued_item] || '未選択',
+    axis_after: valuedItemMap[midData.valued_item] || '未選択',
+    most_influential: factorMap[afterData.influence_factor] || '—',
+    take_home_money: 0,
+    desired_rent: 0
   };
-  localStorage.setItem('residence_study_log', JSON.stringify(log));
-  window.location.href = 'complete.html';
-});
+
+  // GASへ送信
+  fetch(GAS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    // データ更新して遷移
+    log.user_after_data = {
+      final_loc: afterData.final_loc,
+      reason_after: afterData.reason_after,
+      change_scale: afterData.change_scale,
+      influence_factor: afterData.influence_factor,
+      future_action: afterData.future_action,
+      timestamp_after: new Date().toISOString()
+    };
+    localStorage.setItem('residence_study_log', JSON.stringify(log));
+    window.location.href = 'complete.html';
+  })
+  .catch(err => {
+    console.error("エラー:", err);
+    alert("データの送信に失敗しました。もう一度試してください。");
+  });
+}
+
+// ── Submit
+document.getElementById('btn_submit').addEventListener('click', sendDataToSheet);
 </script>
 </body>
 </html>

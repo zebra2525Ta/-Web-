@@ -162,19 +162,6 @@
     <div id="influence-display" style="margin-top:14px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:1.4rem;font-weight:900;color:var(--c-accent);"></div>
   </div>
 
-  <!-- データエクスポート -->
-  <div class="card">
-    <div class="card-label">データ</div>
-    <h3>収集データの確認</h3>
-    <p style="font-size:0.85rem;color:var(--c-text-muted);margin-bottom:14px;">
-      あなたのBefore/Afterデータは端末のlocalStorageに保存されています。<br>
-      以下のボタンでJSON形式でコピーできます（研究目的での活用にご協力ください）。
-    </p>
-    <button class="data-export-btn" id="copy-btn">データをJSONでコピー</button>
-    <button class="data-export-btn" id="gas-send-btn" style="background:var(--c-accent);color:#fff;margin-left:8px;margin-top:8px;">データを研究シートに送信</button>
-    <div id="copy-msg" style="text-align:center;font-size:0.82rem;color:var(--c-accent3);margin-top:8px;display:none;">コピーしました</div>
-  </div>
-
   <div class="thank-note">
     ご参加ありがとうございました。<br>
     このWeb教材は、居住地選択に関する先入観の変容を検証するための<br>
@@ -291,54 +278,6 @@ document.getElementById('influence-display').textContent = inf;
 setTimeout(() => {
   document.querySelectorAll('.sum-bar').forEach(b => { b.style.width = b.dataset.target + '%'; });
 }, 300);
-
-// ── コピー
-document.getElementById('copy-btn').addEventListener('click', () => {
-  const text = JSON.stringify(log, null, 2);
-  navigator.clipboard.writeText(text).then(() => {
-    const msg = document.getElementById('copy-msg');
-    msg.style.display = 'block';
-    setTimeout(() => { msg.style.display = 'none'; }, 2500);
-  });
-});
-
-// ── GAS送信機能
-const GAS_URL = "https://script.google.com/macros/s/AKfycby4X_VFB5yejOIey_zWXxln_1fnjgvJJvr-ds1atdTqNnRP8OcyXqIX_FyhVUycZPzXpQ/exec";
-
-function sendDataToSheet() {
-  // 1. localStorageからデータを取得して整形
-  const payload = {
-    before_choice: locMap[before.desired_loc] || '未選択',
-    after_choice: locMap[after.final_loc] || '未選択',
-    choice_status: before.desired_loc === after.final_loc ? '変化なし' : '変化あり',
-    change_score: parseInt(after.change_scale) || 0,
-    before_reason: bReason,
-    after_reason: aReason,
-    axis_before: beforeAxis || '未選択',
-    axis_after: afterAxis || '未選択',
-    most_influential: inf,
-    take_home_money: 0, // 各章で計算した可処分所得（実装時にしましょう）
-    desired_rent: 0     // ユーザーが希望する家賃（実装時にしましょう）
-  };
-
-  // 2. GASへ送信
-  fetch(GAS_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
-    alert("✅ データが研究用シートに保存されました！\nご協力ありがとうございました。");
-  })
-  .catch(err => console.error("❌ エラー:", err));
-}
-
-// ── GAS送信ボタンのハンドラー
-const gasSendBtn = document.getElementById('gas-send-btn');
-if (gasSendBtn) {
-  gasSendBtn.addEventListener('click', sendDataToSheet);
-}
 </script>
 </body>
 </html>
