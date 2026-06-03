@@ -89,9 +89,16 @@ body {
 
 /* ── CONTAINER ── */
 .container {
-  max-width: 900px;
+  width: 66.67%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 28px 80px;
+  padding: 0 0 80px;
+}
+@media (max-width: 768px) {
+  .container {
+    width: auto;
+    padding: 0 20px 80px;
+  }
 }
 
 /* ── CARD ── */
