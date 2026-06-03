@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第4章：ライフスタイルと支援制度 | 居住地選択シミュレーション</title>
+<title>第4章：5年後の貯金シミュレーション | 居住地選択シミュレーション</title>
 <link rel="stylesheet" href="style.css">
 <style>
 .section-h {
@@ -171,39 +171,11 @@ input[type=range].sim-slider::-moz-range-thumb {
   width: 22px; height: 22px;
   background: var(--c-accent); border-radius: 50%; border: none; cursor: pointer;
 }
-/* 読了プログレスバー */
-body { padding-bottom: 56px; }
-.rpb {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-  padding: 10px 16px;
-  display: flex; align-items: center; gap: 12px;
-  z-index: 200;
-  opacity: 0; transform: translateY(8px);
-  transition: opacity 0.3s, transform 0.3s;
-}
-.rpb.visible { opacity: 1; transform: translateY(0); }
-.rpb-track {
-  flex: 1; height: 6px;
-  background: var(--c-border); border-radius: 3px; overflow: hidden;
-}
-.rpb-fill {
-  height: 100%; width: 0;
-  background: var(--c-accent); border-radius: 3px;
-  transition: width 0.15s ease, background 0.3s;
-}
-.rpb-fill.done { background: #3ec9b0; }
-.rpb-text {
-  font-size: 0.75rem; color: var(--c-text-muted);
-  white-space: nowrap; min-width: 160px; text-align: right;
-}
-.rpb-text.done { color: #3ec9b0; font-weight: 700; }
 </style>
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 4</div>
@@ -405,39 +377,7 @@ btn5.addEventListener('click', () => { window.location.href = 'ch5.html'; });
   update();
 })();
 
-// ── 読了プログレスバー
-(function() {
-  const rpbEl  = document.getElementById('rpb');
-  const fillEl = document.getElementById('rpb-fill');
-  const textEl = document.getElementById('rpb-text');
-  const UNLOCK = 80;
-  let unlocked = false;
-
-  function update() {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = maxScroll > 0 ? Math.min(100, (window.scrollY / maxScroll) * 100) : 100;
-    fillEl.style.width = pct + '%';
-    if (pct > 5) rpbEl.classList.add('visible');
-    if (!unlocked) {
-      if (pct >= UNLOCK) {
-        unlocked = true;
-        fillEl.classList.add('done');
-        textEl.classList.add('done');
-        textEl.textContent = '読了完了';
-      } else {
-        textEl.textContent = `読了まであと約${Math.ceil(UNLOCK - pct)}%`;
-      }
-    }
-  }
-
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-})();
 </script>
 
-<div class="rpb" id="rpb" role="status" aria-live="polite">
-  <div class="rpb-track"><div class="rpb-fill" id="rpb-fill"></div></div>
-  <span class="rpb-text" id="rpb-text">読了まであと約80%</span>
-</div>
 </body>
 </html>

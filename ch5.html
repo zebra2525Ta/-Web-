@@ -44,7 +44,7 @@
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 5</div>
@@ -191,7 +191,7 @@
         </label>
       </div>
 
-      <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:12px;">Q5を選択すると送信ボタンが有効になります</p>
+      <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:12px;">すべて回答すると次へ進めます</p>
       <button id="btn_submit" class="btn-primary" disabled>
         学習データを記録して完了する →
       </button>
@@ -228,9 +228,6 @@ function showProfiles() {
     document.getElementById('action-proposals').innerHTML = `<div class="action-highlight">${p}</div>`;
   }
 
-  setTimeout(() => {
-    document.getElementById('profile_section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
 }
 
 // ── Q1
@@ -297,6 +294,11 @@ const valuedItemMap = { money: 'お金・生活費', rent: '家賃の安さ', ac
 const factorMap = { money: '可処分所得・お金のデータ', access: '交通・アクセス情報', service: '行政サービス・支援制度', lifestyle: '生活シナリオ・リアルなイメージ' };
 
 function sendDataToSheet() {
+  const btn = document.getElementById('btn_submit');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = '送信中…';
+
   const log = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
   const beforeData = log.user_before_data || {};
   const midData = log.user_mid_data || {};

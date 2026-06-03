@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>河内長野市について - 居住地選択シミュレーション</title>
+<title>河内長野市について | 居住地選択シミュレーション</title>
 <link rel="stylesheet" href="style.css">
 <style>
 .city-detail-header {
@@ -177,7 +177,7 @@
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" id="prog" style="width:30%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
 
 <section class="city-detail-header">
   <div class="city-detail-tag">バランス型</div>
@@ -326,11 +326,6 @@
 </div>
 
 <script>
-window.addEventListener('scroll', () => {
-  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-  document.getElementById('prog').style.width = pct + '%';
-});
-
 const obs = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting) {
     document.querySelectorAll('.cmp-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });

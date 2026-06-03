@@ -6,24 +6,6 @@
 <title>第1章：3つの地域を知る | 居住地選択シミュレーション</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.timer-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(245,200,66,0.1);
-  border: 1px solid rgba(245,200,66,0.3);
-  color: var(--c-gold);
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 5px 14px;
-  border-radius: 20px;
-  margin-top: 14px;
-}
-#timer-count {
-  font-family: 'Zen Kaku Gothic New', sans-serif;
-  font-size: 1rem;
-}
-
 .city-detail-section { margin-bottom: 28px; }
 .city-detail-section h3 {
   font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -63,13 +45,6 @@
   border: none;
   border-top: 1px solid var(--c-border);
   margin: 24px 0;
-}
-
-.progress-note {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--c-text-muted);
-  margin-top: 16px;
 }
 
 .ch1-tabs {
@@ -141,18 +116,12 @@
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:16%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 1</div>
   <h1 class="chapter-title">3つの地域を<span>フラットに知る</span></h1>
   <p class="chapter-desc">先入観を交えず、まずは客観的なデータを確認しましょう。</p>
-  <div class="timer-badge" id="timer-badge">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span id="timer-label">読了まで</span>
-    <span id="timer-count">10</span>
-    <span id="timer-unit">秒</span>
-  </div>
 </div>
 
 <div class="container">
@@ -160,6 +129,7 @@
   <!-- 直感クイズ -->
   <div class="card" id="predict-card">
     <div class="card-label">直感チェック — まず予測してみよう</div>
+    <p style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:1.3rem;font-weight:700;color:var(--c-accent);margin-bottom:10px;letter-spacing:0.01em;">あなたの直感、正しい？</p>
     <h3>3都市のうち、<strong>社会人の平均年収が最も高い</strong>のはどこだと思いますか？</h3>
     <p style="color:var(--c-text-muted);font-size:0.85rem;margin-bottom:16px;">データを見る前に、直感で答えてください。</p>
     <div class="quiz-options" id="predict-btns">
@@ -171,7 +141,7 @@
   </div>
 
   <!-- CITY GRID -->
-  <div class="city-grid" id="city-grid-section" style="display:none">
+  <div class="city-grid reveal-section" id="city-grid-section">
     <!-- 大阪市 -->
     <div class="city-card osaka">
       <h3>大阪市</h3>
@@ -215,10 +185,10 @@
     </div>
   </div>
 
-  <hr class="section-divider" id="detail-divider" style="display:none">
+  <hr class="section-divider reveal-section" id="detail-divider">
 
   <!-- 詳細比較 -->
-  <div class="card" id="detail-card" style="display:none">
+  <div class="card reveal-section" id="detail-card">
     <div class="card-label">詳細比較</div>
     <h3>主要指標を並べてみると</h3>
     <table class="data-table">
@@ -275,7 +245,7 @@
   </div>
 
   <!-- 財務比較チャート -->
-  <div class="card">
+  <div class="card reveal-section" id="chart-card">
     <div class="card-label">財務データ可視化</div>
     <h3>数字をグラフで見る</h3>
     <div class="ch1-tabs" id="ch1-tabs">
@@ -288,14 +258,13 @@
   </div>
 
   <!-- 次章への好奇心テキスト -->
-  <div class="next-teaser">
+  <div class="next-teaser reveal-section" id="next-teaser-ch1">
     <div class="nt-label">▶ 次の章で明かされること</div>
     <strong>「年収が高い都市 = 手元にお金が残る都市」は本当でしょうか？</strong><br>
     年収のランキングは分かりました。では、なぜこれほどの逆転現象が起きるのか？次章でその<em>「生活コストのカラクリ」</em>を深掘りします。
   </div>
 
-  <p class="progress-note" id="progress-note">直感クイズに答えると、または10秒後に次へ進めます</p>
-
+  <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:16px;text-align:center;">すべて回答すると次へ進めます</p>
   <button id="btn_to_ch2" class="btn-primary" disabled>
     第2章：お金について深く考える →
   </button>
@@ -307,52 +276,6 @@
 const stored = localStorage.getItem('residence_study_log');
 if (!stored) { window.location.href = 'index.html'; }
 
-// ── ボタン解放管理
-let timerDone = false;
-let scrollDone = false;
-let quizDone  = false;
-let unlocked  = false;
-
-function unlock() {
-  if (unlocked) return;
-  unlocked = true;
-  const btn = document.getElementById('btn_to_ch2');
-  btn.disabled = false;
-  document.getElementById('progress-note').textContent = '次に進む準備ができました';
-  document.getElementById('timer-label').textContent = '';
-  document.getElementById('timer-count').textContent = '読了完了';
-  document.getElementById('timer-unit').textContent = '';
-}
-
-// 10秒カウントダウン（フォールバック）
-let count = 10;
-const display = document.getElementById('timer-count');
-const interval = setInterval(() => {
-  count--;
-  display.textContent = count;
-  if (count <= 0) {
-    clearInterval(interval);
-    timerDone = true;
-    document.getElementById('city-grid-section').style.display = '';
-    document.getElementById('detail-divider').style.display = '';
-    document.getElementById('detail-card').style.display = '';
-    unlock();
-  }
-}, 1000);
-
-// スクロール最下部検知
-window.addEventListener('scroll', () => {
-  if (scrollDone) return;
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-    scrollDone = true;
-    clearInterval(interval);
-    document.getElementById('timer-count').textContent = '0';
-    document.getElementById('city-grid-section').style.display = '';
-    document.getElementById('detail-divider').style.display = '';
-    document.getElementById('detail-card').style.display = '';
-    unlock();
-  }
-});
 
 // ── 直感クイズ（年収予測）
 const CORRECT_PRED = 'pred_kawachi';
@@ -372,6 +295,9 @@ document.querySelectorAll('#predict-btns .quiz-btn').forEach(btn => {
       }
     });
 
+    // クイズ回答でボタン解放
+    document.getElementById('btn_to_ch2').disabled = false;
+
     // 結果メッセージ表示
     const resEl = document.getElementById('predict-result');
     resEl.style.display = 'block';
@@ -389,16 +315,15 @@ document.querySelectorAll('#predict-btns .quiz-btn').forEach(btn => {
       </div>`;
     }
 
-    // データセクション表示
-    document.getElementById('city-grid-section').style.display = '';
-    document.getElementById('detail-divider').style.display = '';
-    document.getElementById('detail-card').style.display = '';
+    // クイズ回答後にコンテンツをフェードイン表示
+    const cityGrid = document.getElementById('city-grid-section');
+    cityGrid.style.display = 'grid';
+    document.getElementById('detail-divider').style.display = 'block';
+    document.getElementById('detail-card').style.display = 'block';
+    document.getElementById('chart-card').style.display = 'block';
+    document.getElementById('next-teaser-ch1').style.display = 'block';
 
-    // クイズ完了 → ボタン解放
-    quizDone = true;
-    clearInterval(interval);
-    document.getElementById('timer-count').textContent = '0';
-    unlock();
+
   });
 });
 

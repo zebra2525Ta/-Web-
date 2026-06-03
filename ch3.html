@@ -104,39 +104,11 @@
   margin-bottom: 6px;
   text-transform: uppercase;
 }
-/* 読了プログレスバー */
-body { padding-bottom: 56px; }
-.rpb {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-  padding: 10px 16px;
-  display: flex; align-items: center; gap: 12px;
-  z-index: 200;
-  opacity: 0; transform: translateY(8px);
-  transition: opacity 0.3s, transform 0.3s;
-}
-.rpb.visible { opacity: 1; transform: translateY(0); }
-.rpb-track {
-  flex: 1; height: 6px;
-  background: var(--c-border); border-radius: 3px; overflow: hidden;
-}
-.rpb-fill {
-  height: 100%; width: 0;
-  background: var(--c-accent); border-radius: 3px;
-  transition: width 0.15s ease, background 0.3s;
-}
-.rpb-fill.done { background: #3ec9b0; }
-.rpb-text {
-  font-size: 0.75rem; color: var(--c-text-muted);
-  white-space: nowrap; min-width: 160px; text-align: right;
-}
-.rpb-text.done { color: #3ec9b0; font-weight: 700; }
 </style>
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 3</div>
@@ -370,7 +342,7 @@ btn4.addEventListener('click', () => { window.location.href = 'ch4.html'; });
 
 // ── レーダーチャート
 (function() {
-  const AXES  = ['交通\n利便性','自然・\n住環境','経済的\nゆとり','雇用\n機会','子育て\n環境','テレワーク\n適性'];
+  const AXES  = ['交通利便性','自然・住環境','経済的ゆとり','雇用機会','子育て環境','テレワーク適性'];
   const CITIES = [
     { color:'var(--c-osaka)',      vals:[5,2,2,5,2,3] },
     { color:'var(--c-kawachi)',    vals:[3,4,4,3,5,4] },
@@ -388,69 +360,37 @@ btn4.addEventListener('click', () => { window.location.href = 'ch4.html'; });
     Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
     return e;
   }
-  // grid
+  // grid with level labels
   for(let l=1;l<=levels;l++){
     const r=(maxR/levels)*l;
-    svg.appendChild(el('path',{d:path(Array.from({length:N},(_,i)=>pt(r,i))),fill:'none',stroke:'rgba(255,255,255,0.07)','stroke-width':'1'}));
+    svg.appendChild(el('path',{d:path(Array.from({length:N},(_,i)=>pt(r,i))),fill:'none',stroke:'rgba(0,0,0,0.12)','stroke-width':'1.2'}));
+    // スケール値を表示
+    const p0=pt(r,0);
+    const lbl=el('text',{x:p0.x-8,y:p0.y,'text-anchor':'end','dominant-baseline':'middle','font-size':'10','fill':'rgba(0,0,0,0.45)','font-family':'Noto Sans JP,sans-serif','font-weight':'600'});
+    lbl.textContent=String(l);
+    svg.appendChild(lbl);
   }
   // axis lines
   for(let i=0;i<N;i++){
     const p=pt(maxR,i);
-    svg.appendChild(el('line',{x1:cx,y1:cy,x2:p.x,y2:p.y,stroke:'rgba(255,255,255,0.1)','stroke-width':'1'}));
+    svg.appendChild(el('line',{x1:cx,y1:cy,x2:p.x,y2:p.y,stroke:'rgba(0,0,0,0.18)','stroke-width':'1.5'}));
   }
   // polygons
   CITIES.forEach(c=>{
     const pts=c.vals.map((v,i)=>pt((v/5)*maxR,i));
-    // style属性でCSS変数を使用（プレゼンテーション属性では解決されないため）
-    svg.appendChild(el('path',{d:path(pts),style:`fill:${c.color};fill-opacity:0.13;stroke:${c.color};stroke-width:2;stroke-opacity:0.85`}));
-    pts.forEach(p=>svg.appendChild(el('circle',{cx:p.x,cy:p.y,r:'3',style:`fill:${c.color}`})));
+    svg.appendChild(el('path',{d:path(pts),style:`fill:${c.color};fill-opacity:0.13;stroke:${c.color};stroke-width:2.5;stroke-opacity:0.9`}));
+    pts.forEach(p=>svg.appendChild(el('circle',{cx:p.x,cy:p.y,r:'4',style:`fill:${c.color};stroke:#fff;stroke-width:1`})));
   });
-  // labels
+  // labels - larger and clearer
   AXES.forEach((label,i)=>{
-    const p=pt(maxR+22,i);
-    const lines=label.split('\n');
-    const t=el('text',{x:p.x,y:p.y-(lines.length-1)*6,'text-anchor':'middle','dominant-baseline':'middle','font-size':'9.5','fill':'rgba(255,255,255,0.55)','font-family':'Noto Sans JP,sans-serif'});
-    lines.forEach((ln,li)=>{
-      const s=el('tspan',{x:p.x,dy:li===0?'0':'13'});
-      s.textContent=ln; t.appendChild(s);
-    });
+    const p=pt(maxR+28,i);
+    const t=el('text',{x:p.x,y:p.y,'text-anchor':'middle','dominant-baseline':'middle','font-size':'11.5','fill':'rgba(0,0,0,0.75)','font-family':'Noto Sans JP,sans-serif','font-weight':'700'});
+    t.textContent=label;
     svg.appendChild(t);
   });
 })();
 
-// ── 読了プログレスバー
-(function() {
-  const rpbEl = document.getElementById('rpb');
-  const fillEl = document.getElementById('rpb-fill');
-  const textEl = document.getElementById('rpb-text');
-  const UNLOCK = 80;
-  let unlocked = false;
-
-  function update() {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = maxScroll > 0 ? Math.min(100, (window.scrollY / maxScroll) * 100) : 100;
-    fillEl.style.width = pct + '%';
-    if (pct > 5) rpbEl.classList.add('visible');
-    if (!unlocked) {
-      if (pct >= UNLOCK) {
-        unlocked = true;
-        fillEl.classList.add('done');
-        textEl.classList.add('done');
-        textEl.textContent = '読了完了';
-      } else {
-        textEl.textContent = `読了まであと約${Math.ceil(UNLOCK - pct)}%`;
-      }
-    }
-  }
-
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-})();
 </script>
 
-<div class="rpb" id="rpb" role="status" aria-live="polite">
-  <div class="rpb-track"><div class="rpb-fill" id="rpb-fill"></div></div>
-  <span class="rpb-text" id="rpb-text">読了まであと約80%</span>
-</div>
 </body>
 </html>

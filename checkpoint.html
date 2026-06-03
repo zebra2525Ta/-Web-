@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STEP 0：あなたの「直感」チェック - 居住地選択シミュレーション</title>
+<title>STEP 0：あなたの「直感」チェック | 居住地選択シミュレーション</title>
 <link rel="stylesheet" href="style.css">
 <style>
 body { background: var(--c-bg); }
@@ -164,7 +164,7 @@ body { background: var(--c-bg); }
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
 
 <section class="chapter-section" style="padding: 80px 20px; background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-surface) 100%);">
   <div class="chapter-header" style="text-align: center; margin-bottom: 60px;">
@@ -256,7 +256,7 @@ body { background: var(--c-bg); }
 
     <!-- Submit -->
     <div style="margin-top: 40px;">
-      <p class="lock-note" style="text-align: center; font-size: 0.8rem; color: var(--c-text-muted); margin-top: 8px;">すべての質問にお答えいただくと、次へ進めます</p>
+      <p class="lock-note" style="text-align: center; font-size: 0.8rem; color: var(--c-text-muted); margin-top: 8px;">すべて回答すると次へ進めます</p>
       <button id="btn_next" class="btn-primary" disabled style="display: block; width: 100%; padding: 18px; background: var(--c-accent); color: #fff; border: none; border-radius: var(--r-sm); font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease; letter-spacing: 0.04em; margin-top: 12px;">
         地域情報を見る →
       </button>
@@ -320,13 +320,6 @@ document.getElementById('btn_next').addEventListener('click', () => {
   window.location.href = 'osaka.html';
 });
 
-// ── プログレスバーアニメーション
-window.addEventListener('scroll', () => {
-  const scrollTop = window.scrollY;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = (scrollTop / docHeight) * 100;
-  document.querySelector('.progress-fill').style.width = Math.min(progress + 30, 40) + '%';
-});
 </script>
 
 </body>

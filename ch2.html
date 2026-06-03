@@ -59,7 +59,7 @@
 </head>
 <body>
 
-<div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+<div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
 
 <div class="chapter-header">
   <div class="chapter-tag">Chapter 2</div>
@@ -72,7 +72,8 @@
   <!-- QUIZ -->
   <div class="card" id="quiz_section">
     <div class="card-label">クイズ — まず直感で答えてください</div>
-    <h3>「若者が一人暮らしをするなら、自由に使えるお金（可処分所得）が一番多くて豊かに暮らせるのは、やっぱり大都市（大阪市）である」<br>── この直感は正しいと思いますか？</h3>
+    <p style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:1.3rem;font-weight:700;color:var(--c-accent);margin-bottom:10px;letter-spacing:0.01em;">都会が一番豊か、本当に？</p>
+    <h3>一人暮らしで手元にお金が最も残るのは、大阪市だと思いますか？</h3>
     <p style="color:var(--c-text-muted);font-size:0.85rem;margin-bottom:16px;">直感で選んでOKです。</p>
     <div class="quiz-options">
       <button class="quiz-btn" id="ans_true">
@@ -203,7 +204,7 @@
         </label>
       </div>
 
-      <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:12px;">選択するとボタンが有効になります</p>
+      <p style="font-size:0.8rem;color:var(--c-text-muted);margin-top:12px;">すべて回答すると次へ進めます</p>
       <button id="btn_to_ch4" class="btn-primary" disabled>
         第3章：ライフスタイルと支援制度を見る →
       </button>
@@ -266,10 +267,6 @@ quizBtns.forEach(id => {
       });
     }, 400);
 
-    // スクロール
-    setTimeout(() => {
-      explain.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
   });
 });
 
