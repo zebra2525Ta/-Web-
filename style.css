@@ -15,9 +15,9 @@
   --c-accent3: #059669;           /* 緑 — 正解・完了 */
   --c-cta-bright: #065F46;
   --c-cta-bright-alt: #7C3AED;
-  --c-osaka: #0055CC;             /* アーバン・ディープブルー — コントラスト比 5.2:1 */
-  --c-kawachi: #1B6A32;           /* フォレスト・ダークグリーン — コントラスト比 4.8:1 */
-  --c-nishiwaki: #C2410C;         /* テラコッタ・バーン — コントラスト比 4.6:1 */
+  --c-osaka: #1A4A8A;             /* 藍染ネイビー — 大阪・水都・堂島 */
+  --c-kawachi: #3C7A3A;           /* 若草グリーン — 里山・森・自然 */
+  --c-nishiwaki: #B85C38;         /* 播州織テラコッタ — 西脇の伝統織物 */
   --c-gold: #B45309;
   --r: 12px;
   --r-sm: 4px;
@@ -99,6 +99,13 @@ body {
     width: auto;
     padding: 0 20px 80px;
   }
+  .form-step {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .step-content {
+    width: 100%;
+  }
 }
 
 /* ── CARD ── */
@@ -110,9 +117,9 @@ body {
   margin-bottom: 20px;
 }
 .card-label {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-text-bright-muted);
   margin-bottom: 10px;
@@ -327,9 +334,9 @@ input[type="range"]::-webkit-slider-thumb {
   display: inline-block;
   margin-bottom: 14px;
 }
-.osaka .city-tag { background: rgba(0,85,204,0.1); color: var(--c-osaka); }
-.kawachi .city-tag { background: rgba(27,106,50,0.1); color: var(--c-kawachi); }
-.nishiwaki .city-tag { background: rgba(194,65,12,0.1); color: var(--c-nishiwaki); }
+.osaka .city-tag { background: rgba(26,74,138,0.1); color: var(--c-osaka); }
+.kawachi .city-tag { background: rgba(60,122,58,0.1); color: var(--c-kawachi); }
+.nishiwaki .city-tag { background: rgba(184,92,56,0.1); color: var(--c-nishiwaki); }
 .city-stat {
   display: flex;
   align-items: baseline;
@@ -457,9 +464,9 @@ input[type="range"]::-webkit-slider-thumb {
   border-bottom: 1px solid var(--c-border);
   text-align: center;
 }
-.comp-table th.osaka-h { background: rgba(0,85,204,0.12); color: var(--c-osaka); }
-.comp-table th.kawachi-h { background: rgba(27,106,50,0.12); color: var(--c-kawachi); }
-.comp-table th.nishiwaki-h { background: rgba(194,65,12,0.12); color: var(--c-nishiwaki); }
+.comp-table th.osaka-h { background: rgba(26,74,138,0.12); color: var(--c-osaka); }
+.comp-table th.kawachi-h { background: rgba(60,122,58,0.12); color: var(--c-kawachi); }
+.comp-table th.nishiwaki-h { background: rgba(184,92,56,0.12); color: var(--c-nishiwaki); }
 .comp-table td {
   padding: 11px 12px;
   border-bottom: 1px solid var(--c-border);
