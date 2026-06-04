@@ -302,7 +302,8 @@ function sendDataToSheet() {
   const log = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
   const beforeData = log.user_before_data || {};
   const midData = log.user_mid_data || {};
-  
+  const simSettings = log.sim_settings || {};
+
   // ペイロード作成
   const payload = {
     before_choice: locMap[beforeData.desired_loc] || '未選択',
@@ -314,8 +315,8 @@ function sendDataToSheet() {
     axis_before: valuedItemMap[beforeData.valued_item_before] || valuedItemMap[midData.valued_item] || '未選択',
     axis_after: valuedItemMap[midData.valued_item] || '未選択',
     most_influential: factorMap[afterData.influence_factor] || '—',
-    take_home_money: 0,
-    desired_rent: 0
+    take_home_money: simSettings.take_home_money || 0,
+    desired_rent: simSettings.desired_rent || 0
   };
 
   // GASへ送信
