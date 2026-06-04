@@ -659,16 +659,65 @@ input[type="range"]::-webkit-slider-thumb {
   transition: width 0.8s cubic-bezier(.23,1,.32,1);
 }
 
+/* ── SP ONLY LINE BREAK ── */
+.sp-br { display: none; }
+@media (max-width: 600px) { .sp-br { display: block; } }
+
 /* ── MOBILE OVERRIDES ── */
 @media (max-width: 600px) {
   .card { padding: 20px 16px; }
   .chapter-title { font-size: 1.35rem !important; }
   .chapter-desc  { font-size: 0.88rem !important; }
-  .comp-table { font-size: 0.75rem; }
-  .comp-table td, .comp-table th { padding: 8px 6px; }
-  .comp-table td:first-child { white-space: normal; font-size: 0.72rem; min-width: 70px; }
+
+  /* ① カタカナ等の単語途中での折り返しを防ぐ */
+  .radio-option { word-break: keep-all; }
+
+  /* ② 比較表：縦レイアウト（項目名が全幅、都市3列が横並び） */
+  .comp-table thead { display: none; }
+  .comp-table,
+  .comp-table tbody { display: block; }
+  .comp-table tr {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  .comp-table th[scope="row"] {
+    flex: 0 0 100%;
+    background: var(--c-surface2);
+    padding: 8px 12px;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: var(--c-text-muted);
+    white-space: normal !important;
+    min-width: unset;
+    border-bottom: 1px solid var(--c-border);
+    text-align: left;
+  }
+  .comp-table td {
+    flex: 1;
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 0.8rem;
+    border-bottom: none;
+  }
+  .comp-table td:nth-child(2)::before { content: "大阪市";   display: block; font-size: 0.65rem; color: var(--c-osaka);     font-weight: 700; margin-bottom: 3px; }
+  .comp-table td:nth-child(3)::before { content: "河内長野"; display: block; font-size: 0.65rem; color: var(--c-kawachi);   font-weight: 700; margin-bottom: 3px; }
+  .comp-table td:nth-child(4)::before { content: "西脇市";   display: block; font-size: 0.65rem; color: var(--c-nishiwaki);font-weight: 700; margin-bottom: 3px; }
+
+  /* ③ スケールボタン：高さ統一・中央揃え */
   .scale-group { gap: 5px; }
-  .scale-btn { min-width: 40px; padding: 10px 2px; font-size: 0.88rem; }
+  .scale-btn {
+    min-width: 40px;
+    padding: 10px 2px;
+    font-size: 0.88rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 /* ── ACCESSIBILITY ── */
