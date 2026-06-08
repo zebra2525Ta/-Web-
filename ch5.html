@@ -205,6 +205,7 @@ const stored = localStorage.getItem('residence_study_log');
 if (!stored) { window.location.href = 'index.html'; }
 
 let afterData = { final_loc: null, reason_after: null, change_scale: null, influence_factor: null };
+let formSubmitting = false;
 
 function checkAfterComplete() {
   const allFilled = afterData.final_loc && afterData.reason_after && afterData.change_scale && afterData.influence_factor;
@@ -233,6 +234,7 @@ function showProfiles() {
 // ── Q1
 document.querySelectorAll('#q1-group .radio-option').forEach(opt => {
   opt.addEventListener('click', () => {
+    if (formSubmitting) return;
     document.querySelectorAll('#q1-group .radio-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     opt.querySelector('input').checked = true;
@@ -258,6 +260,7 @@ document.getElementById('reason_after').addEventListener('input', e => {
 // ── Q3 scale buttons
 document.querySelectorAll('#change-scale-group .scale-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    if (formSubmitting) return;
     document.querySelectorAll('#change-scale-group .scale-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     afterData.change_scale = btn.dataset.val;
@@ -268,6 +271,7 @@ document.querySelectorAll('#change-scale-group .scale-btn').forEach(btn => {
 // ── Q4
 document.querySelectorAll('#q4-group .radio-option').forEach(opt => {
   opt.addEventListener('click', () => {
+    if (formSubmitting) return;
     document.querySelectorAll('#q4-group .radio-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     opt.querySelector('input').checked = true;
@@ -279,6 +283,7 @@ document.querySelectorAll('#q4-group .radio-option').forEach(opt => {
 // ── Q5
 document.querySelectorAll('#q5-group .radio-option').forEach(opt => {
   opt.addEventListener('click', () => {
+    if (formSubmitting) return;
     document.querySelectorAll('#q5-group .radio-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     opt.querySelector('input').checked = true;
@@ -296,17 +301,10 @@ const factorMap = { money: '可処分所得・お金のデータ', access: '交�
 function sendDataToSheet() {
   const btn = document.getElementById('btn_submit');
   if (btn.disabled) return;
+  formSubmitting = true;
   btn.disabled = true;
   btn.textContent = '送信中…';
-
-  // フォームをロック（送信後の変更を防ぐ）
-  ['q1-group', 'q4-group', 'q5-group'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.pointerEvents = 'none';
-  });
   document.getElementById('reason_after').disabled = true;
-  const scaleGroup = document.getElementById('change-scale-group');
-  if (scaleGroup) scaleGroup.style.pointerEvents = 'none';
 
   const log = JSON.parse(localStorage.getItem('residence_study_log') || '{}');
   const beforeData = log.user_before_data || {};
