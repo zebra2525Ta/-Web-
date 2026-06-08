@@ -376,11 +376,12 @@ document.querySelectorAll('.scratch-mask').forEach(mask => {
   let tdist = 0, ltx = 0, lty = 0;
   mask.addEventListener('touchstart', e => { tdist = 0; ltx = e.touches[0].clientX; lty = e.touches[0].clientY; }, { passive: true });
   mask.addEventListener('touchmove', e => {
+    e.preventDefault();
     const t = e.touches[0];
     tdist += Math.hypot(t.clientX - ltx, t.clientY - lty);
     ltx = t.clientX; lty = t.clientY;
     if (tdist >= THRESHOLD) reveal();
-  }, { passive: true });
+  }, { passive: false });
 });
 </script>
 </body>

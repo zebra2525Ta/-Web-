@@ -795,6 +795,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   z-index: 10;
   transition: opacity 0.4s ease;
   border-radius: inherit;
+  touch-action: none;
 }
 .scratch-mask.revealed { opacity: 0; pointer-events: none; }
 .scratch-hint {
