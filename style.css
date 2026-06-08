@@ -741,3 +741,68 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── 数値マスク（虫食い） ── */
+.val-text { display: none; }
+.val-text.revealed {
+  display: inline;
+  animation: valReveal 0.3s ease forwards;
+}
+@keyframes valReveal {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.val-mask {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1.5px dashed #9ca3af;
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.3s;
+  animation: maskPulse 2s ease-in-out infinite;
+}
+.val-mask::before { content: '👆'; font-size: 0.75rem; }
+.val-mask:hover {
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.14);
+  animation: none;
+}
+@keyframes maskPulse {
+  0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  50%       { box-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+}
+.val-mask.fade-out { opacity: 0; pointer-events: none; animation: none; }
+
+/* ── スクラッチ露出 ── */
+.scratch-dc { position: relative; overflow: hidden; user-select: none; }
+.scratch-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 35%, #b2babb 60%, #9ea8a8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.4s ease;
+  border-radius: inherit;
+}
+.scratch-mask.revealed { opacity: 0; pointer-events: none; }
+.scratch-hint {
+  color: #2c2c2c;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  user-select: none;
+  padding: 0 20px;
+  line-height: 1.6;
+}

@@ -31,7 +31,7 @@
 .city-detail-desc {
   color: var(--c-text-muted);
   font-size: 0.95rem;
-  max-width: 520px;
+  max-width: 540px;
   margin: 0 auto;
   line-height: 1.8;
 }
@@ -212,26 +212,26 @@
   <!-- クイックスタッツ -->
   <div class="quick-stats">
     <div class="qs-item">
-      <div class="qs-icon">¥</div>
-      <div class="qs-value">473万円</div>
+      <div class="qs-icon">年収</div>
+      <div class="qs-value"><span class="val-text">473万円</span><span class="val-mask">??? を開く</span></div>
       <div class="qs-label">平均年収 / 年</div>
       <div class="qs-badge qs-badge-mid">3都市中2位</div>
     </div>
     <div class="qs-item qs-best">
       <div class="qs-icon">家賃</div>
-      <div class="qs-value">2.0万円</div>
+      <div class="qs-value"><span class="val-text">2.0万円</span><span class="val-mask">??? を開く</span></div>
       <div class="qs-label">月額家賃（1R目安）</div>
       <div class="qs-badge qs-badge-best">3都市中 最低！</div>
     </div>
     <div class="qs-item">
       <div class="qs-icon">人口</div>
-      <div class="qs-value">3.7万人</div>
+      <div class="qs-value"><span class="val-text">3.7万人</span><span class="val-mask">??? を開く</span></div>
       <div class="qs-label">人口</div>
       <div class="qs-badge qs-badge-mid">コンパクトな町</div>
     </div>
     <div class="qs-item">
       <div class="qs-icon">高齢</div>
-      <div class="qs-value">35.0%</div>
+      <div class="qs-value"><span class="val-text">35.0%</span><span class="val-mask">??? を開く</span></div>
       <div class="qs-label">高齢化率</div>
       <div class="qs-badge qs-badge-mid">地方都市水準</div>
     </div>
@@ -310,14 +310,19 @@
   </div>
 
   <!-- 注意点 -->
-  <div class="dc">
-    <div class="dc-title">注意点・<span>デメリット</span></div>
-    <div class="feature-tags">
-      <span class="ftag warn">車の所有がほぼ必須</span>
-      <span class="ftag warn">専門医療は市外へ移動が必要</span>
-      <span class="ftag warn">求人の種類・数が限られる</span>
-      <span class="ftag warn">夜の娯楽・専門店が少ない</span>
-      <span class="ftag warn">大阪へは高速バスで1〜2時間</span>
+  <div class="dc scratch-dc">
+    <div class="scratch-content">
+      <div class="dc-title">注意点・<span>デメリット</span></div>
+      <div class="feature-tags">
+        <span class="ftag warn">車の所有がほぼ必須</span>
+        <span class="ftag warn">専門医療は市外へ移動が必要</span>
+        <span class="ftag warn">求人の種類・数が限られる</span>
+        <span class="ftag warn">夜の娯楽・専門店が少ない</span>
+        <span class="ftag warn">大阪へは高速バスで1〜2時間</span>
+      </div>
+    </div>
+    <div class="scratch-mask">
+      <span class="scratch-hint">🫲 ここをこすって事実を確認</span>
     </div>
   </div>
 
@@ -374,6 +379,40 @@ const obs = new IntersectionObserver(entries => {
   }
 }, { threshold: 0.4 });
 obs.observe(document.getElementById('compare-sec'));
+
+// 数値マスク
+document.querySelectorAll('.val-mask').forEach(mask => {
+  mask.addEventListener('click', () => {
+    mask.classList.add('fade-out');
+    setTimeout(() => {
+      mask.style.display = 'none';
+      mask.previousElementSibling.classList.add('revealed');
+    }, 300);
+  });
+});
+
+// スクラッチ露出
+document.querySelectorAll('.scratch-mask').forEach(mask => {
+  const THRESHOLD = 350;
+  const reveal = () => mask.classList.add('revealed');
+  let pressing = false, dist = 0, lx = 0, ly = 0;
+  mask.addEventListener('mousedown', e => { e.preventDefault(); pressing = true; dist = 0; lx = e.clientX; ly = e.clientY; });
+  mask.addEventListener('mouseup', () => { pressing = false; });
+  mask.addEventListener('mousemove', e => {
+    if (!pressing) return;
+    dist += Math.hypot(e.clientX - lx, e.clientY - ly);
+    lx = e.clientX; ly = e.clientY;
+    if (dist >= THRESHOLD) reveal();
+  });
+  let tdist = 0, ltx = 0, lty = 0;
+  mask.addEventListener('touchstart', e => { tdist = 0; ltx = e.touches[0].clientX; lty = e.touches[0].clientY; }, { passive: true });
+  mask.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    tdist += Math.hypot(t.clientX - ltx, t.clientY - lty);
+    ltx = t.clientX; lty = t.clientY;
+    if (tdist >= THRESHOLD) reveal();
+  }, { passive: true });
+});
 </script>
 </body>
 </html>
