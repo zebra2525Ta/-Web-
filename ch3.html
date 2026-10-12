@@ -312,7 +312,7 @@
 const stored = localStorage.getItem('residence_study_log');
 if (!stored) { window.location.href = 'index.html'; }
 
-// ── パーソナライズ：選択軸のハイライト
+// ── パーソナライズ：選択軸ハイライト
 (function() {
   const log = JSON.parse(stored || '{}');
   const valued = (log.mid_session_data || {}).valued_item || '';
